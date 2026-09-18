@@ -1,0 +1,66 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* The mark is 24px; the target still clears 44 (s5.12). */
+  width: var(--hit-min);
+  height: var(--hit-min);
+  border-radius: 10px;
+  /* Prominent, not decorative: these are the only profile links in the hero.
+     The outline keeps them legible wherever the split happens to put them -
+     one can sit on near black while the other sits on rust. */
+  border: 1px solid var(--outline-quiet);
+  color: var(--text-primary);
+  transition:
+    color 180ms var(--ease-soft),
+    background-color 180ms var(--ease-soft),
+    transform 180ms var(--ease-soft);
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--canvas);
+  background: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: color 120ms linear, background-color 120ms linear;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .row {
+    justify-content: center;
+    gap: 14px;
+  }
+
+  /* They carry the bottom of the card alone on mobile, so they are sized up. */
+  .link {
+    width: 52px;
+    height: 52px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+}

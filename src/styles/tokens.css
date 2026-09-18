@@ -1,0 +1,136 @@
+/* Design tokens. Values come from docs/HANDOFF.md section 5 and are the single
+   source of truth for the site; do not hardcode a hex or a duration elsewhere. */
+
+:root {
+  /* ---- colour (s5.3) -------------------------------------------------- */
+  --canvas: #0c0c0c; /* page background, left hero panel, dark button labels */
+  --text-primary: #f8f8f8; /* nav, body, signature, primary heading tone     */
+  --orange: #f9542a; /* main CTA fill, active details, principal glow        */
+  --rust: #87392a; /* right hero panel, warm surfaces, dividers              */
+  --amber: #d9835a; /* secondary glow, subtle highlights, hover accents      */
+  --peach: #f0dfd6; /* lower tone of the name gradient                       */
+
+  /* Ordinary text is solid --text-primary. Dark labels sit on orange CTAs.
+     Rust is never used for small text on black. */
+  --on-orange: var(--canvas);
+  --hairline: rgb(248 248 248 / 14%); /* 1px card border, s5.5: 12-16%       */
+  --outline-quiet: rgb(248 248 248 / 30%); /* secondary button outline       */
+
+  /* The name carries one pale vertical gradient across BOTH panels (s5.3).
+     No hard colour change inside a letter, no flip at the split. */
+  --name-gradient: linear-gradient(180deg, var(--text-primary) 0%, var(--peach) 100%);
+
+  /* ---- type (s5.4) ---------------------------------------------------- */
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular",
+    "Menlo", "Consolas", monospace;
+
+  /* Fluid between the mobile and desktop ends the brief specifies. The name
+     lands ~82-86% of card width on desktop and exactly two lines on mobile. */
+  --size-name: clamp(4rem, 12.5vw, 11.25rem); /* 64px -> 180px              */
+  --size-section-title: clamp(1.75rem, 3.6vw, 3.25rem); /* 28px -> 52px     */
+  --size-body: clamp(0.875rem, 1.2vw, 1.0625rem); /* 14px -> 17px           */
+  /* The supporting sentence, lifted above body size at Nex's request so it
+     holds its own under the name. */
+  --size-sentence: clamp(1rem, 1.5vw, 1.375rem); /* 16px -> 22px            */
+  /* The rotating job title. It now leads the composition in place of the
+     eyebrow, so it is sized up to carry that position. */
+  --size-title-role: clamp(1.25rem, 2.3vw, 2rem); /* 20px -> 32px           */
+  --size-nav: clamp(0.8125rem, 1vw, 0.875rem); /* 13px -> 14px              */
+  --size-eyebrow: clamp(0.625rem, 0.85vw, 0.75rem); /* 10px -> 12px         */
+
+  --lh-name: 1.02;
+  --lh-title: 1.15;
+  --lh-body: 1.6;
+  --tracking-eyebrow: 0.12em; /* s5.4: 0.10-0.14em                          */
+
+  --weight-body: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  /* The name's resting weight. Readable, not a near invisible hairline. */
+  --weight-name-rest: 280; /* s5.4: 250-300                                 */
+
+  /* ---- layout (s5.5, s5.10) ------------------------------------------- */
+  --card-inset: 24px; /* desktop; 20px tablet, 12px mobile below            */
+  --card-radius: 32px;
+  --card-pad-x: 52px; /* s5.5: 48-56px                                      */
+  --card-pad-y: 44px;
+  --split-top: 64%; /* curved divider, s5.3                                 */
+  --split-mid: 60%;
+  --split-bottom: 55%;
+  --utility-bottom: 40px; /* s5.5: 36-44px above the card bottom            */
+  --hit-min: 44px; /* s5.12 minimum interactive target                      */
+  --gap-cta: 14px; /* s5.5: 12-16px                                         */
+
+  /* ---- motion (s5.6, s5.7) -------------------------------------------- */
+  --intro-draw: 2.44s; /* signature is complete at this point               */
+  --intro-hold: 2.6s; /* completed signature holds until here               */
+  --intro-fade: 350ms; /* 2.60 -> 2.95s                                     */
+  --card-reveal: 800ms; /* 2.60 -> 3.40s                                    */
+  --card-reveal-at: 2.6s;
+  --ease-card: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --letter-stagger: 32ms; /* s5.7: 28-35ms between letters                  */
+
+  /* ---- pointer field (s5.9) ------------------------------------------- */
+  --glow-primary-size: 420px; /* 380-460px desktop                          */
+  --glow-primary-alpha: 0.22; /* max normal composite opacity               */
+  --glow-secondary-size: 260px; /* 220-300px                                */
+  --glow-secondary-alpha: 0.12;
+  --glow-lag-primary: 220ms; /* 180-260ms eased lag                         */
+  --glow-lag-secondary: 380ms; /* 300-450ms                                 */
+  --glow-return: 1000ms; /* 800-1200ms on pointer leave                     */
+  --glow-rest-x: 62%; /* resting position, s5.9                             */
+  --glow-rest-y: 43%;
+
+  /* ---- tech strip -----------------------------------------------------
+     Minimal on purpose: small marks, generous spacing, so the strip reads as a
+     quiet band rather than a row of badges (see s5.2 on generic tech icons). */
+  --tech-size: 22px; /* the size at the centre of the band; the ends taper */
+  --tech-band-width: 620px;
+  /* One full traversal, which is twice the band's width. A mark is only inside
+     the band for half of it, so this is about 39px/s at the width above. */
+  --tech-duration: 32s;
+
+  /* ---- rust panel grain (s2) ------------------------------------------
+     Subtle static noise, confined to the rust side and clipped to the card
+     radius. The browser rasterises this once and caches it, so there is no
+     per frame cost; desaturated so it reads as grain rather than colour
+     speckle over the rust. */
+  --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* Tablet 834px: 20px margins, 26-28px radius, 28-36px internal padding. */
+@media (max-width: 1024px) {
+  :root {
+    --card-inset: 20px;
+    --card-radius: 27px;
+    --card-pad-x: 32px;
+    --card-pad-y: 32px;
+    --glow-primary-size: 320px;
+    --glow-secondary-size: 200px;
+  }
+}
+
+/* Mobile 390px, checked at 360px: 12px margins, 20-24px corners,
+   22-24px internal side padding, split 65% at top to 45% at bottom. */
+@media (max-width: 600px) {
+  :root {
+    --card-inset: 12px;
+    --card-radius: 22px;
+    --card-pad-x: 23px;
+    --card-pad-y: 24px;
+    --split-top: 65%;
+    --split-mid: 55%;
+    --split-bottom: 45%;
+    --utility-bottom: 28px;
+    /* s5.10 asks for 64-76px "adjusted to fit at 360px". The desktop clamp
+       bottoms out at 64 well before this breakpoint, which leaves the two
+       lines small in the card, so the mobile range is its own curve: 68px at
+       360, 74px at 390, capped at 76. ABDUL is 3.225em wide, so even at the
+       cap it clears the 290px of inner card width at 360. */
+    --size-name: clamp(4rem, 19vw, 4.75rem);
+    --glow-primary-size: 260px;
+    --glow-secondary-size: 170px;
+  }
+}

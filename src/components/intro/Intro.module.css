@@ -1,0 +1,81 @@
+/* The intro fills the viewport with the canvas colour and holds the signature
+   centred in empty space (s5.6). It is a true stroke reveal; the drawing itself
+   is baked into the SVG's own timeline. */
+
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--canvas);
+  opacity: 1;
+  /* It never receives input except through the skip control. */
+  pointer-events: none;
+}
+
+.layer > * {
+  pointer-events: auto;
+}
+
+/* 2.60 -> 2.95s: the intro layer and signature fade together. */
+.leaving {
+  opacity: 0;
+  transition: opacity var(--intro-fade) var(--ease-soft);
+}
+
+.done {
+  display: none;
+}
+
+.mark {
+  width: clamp(240px, 34vw, 380px); /* s5.6: 320-380 desktop, 240-280 mobile */
+  height: auto;
+}
+
+.mark svg {
+  width: 100%;
+  height: auto;
+}
+
+/* A quiet control, lower right, reachable by keyboard and touch (s5.6). Small
+   lettering, but the hit area clears the 44px minimum. */
+.skip {
+  position: absolute;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--hit-min);
+  min-width: var(--hit-min);
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.04em;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 160ms var(--ease-soft);
+}
+
+.skip:hover,
+.skip:focus-visible {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .mark {
+    width: clamp(240px, 68vw, 280px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The signature is shown complete rather than drawn; the layer still steps
+     out of the way, just briefly (s5.12). */
+  .leaving {
+    transition-duration: 200ms;
+  }
+}

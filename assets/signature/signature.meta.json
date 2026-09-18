@@ -1,0 +1,67 @@
+{
+  "source": "assets/signature/abdul-moiz-signature-source.png",
+  "viewBox": [
+    0,
+    0,
+    607,
+    324
+  ],
+  "drawSeconds": 2.44,
+  "startDelaySeconds": 0.12,
+  "holdSeconds": 2.6,
+  "penWidth": 11,
+  "penSettleWidth": 16,
+  "centrelineLength": 3070.37,
+  "strokeCount": 20,
+  "groups": [
+    {
+      "name": "A",
+      "strokes": 2,
+      "length": 217.09,
+      "startSeconds": 0.12
+    },
+    {
+      "name": "crossbar",
+      "strokes": 1,
+      "length": 217.61,
+      "startSeconds": 0.3443
+    },
+    {
+      "name": "bdul",
+      "strokes": 6,
+      "length": 1624.01,
+      "startSeconds": 0.569
+    },
+    {
+      "name": "m",
+      "strokes": 5,
+      "length": 251.26,
+      "startSeconds": 1.4843
+    },
+    {
+      "name": "oiz",
+      "strokes": 4,
+      "length": 675.26,
+      "startSeconds": 1.736
+    },
+    {
+      "name": "idot",
+      "strokes": 1,
+      "length": 11.01,
+      "startSeconds": 2.232
+    },
+    {
+      "name": "underline",
+      "strokes": 1,
+      "length": 74.13,
+      "startSeconds": 2.3016
+    }
+  ],
+  "sourceViewBox": [
+    0,
+    0,
+    564,
+    324
+  ],
+  "note": "The source PNG is clipped at x=564: the finishing flourish's closing curl runs out of frame. tools/signature/sigcore.py reconstructs that curl from the measured ends and pads the canvas to a right margin matching the 41px left one, so the mark is balanced in its own viewBox. Set CLOSE_TAIL=False there if a padded re-export ever arrives."
+}

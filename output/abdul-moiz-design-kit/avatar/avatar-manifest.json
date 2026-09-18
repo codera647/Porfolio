@@ -1,0 +1,16 @@
+{
+  "name": "AM / The Maker",
+  "style": "Original clean-shaven stylized clay character",
+  "animations": {
+    "Idle": 6,
+    "Welcome": 2.4,
+    "LookAround": 4
+  },
+  "fps": 30,
+  "mesh_objects": 102,
+  "vertices": 49396,
+  "triangles": 96832,
+  "source": "Original procedural geometry; no third-party model or photo textures.",
+  "asset_scope": "Upper-body bust; animated head, torso and geometric eye blink. No hand-wave clip.",
+  "glb_bytes": 3061360
+}

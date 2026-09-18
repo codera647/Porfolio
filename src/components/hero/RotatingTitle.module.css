@@ -1,0 +1,70 @@
+/* Nex's real title, now the prominent line above the name (s5.5 item 4, moved
+   there at his request in place of the eyebrow). The trailing word rotates
+   between Engineer and Architect inside a filled block; everything else holds
+   still, and nothing in the hero reflows when it swaps. */
+
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 0.6ch;
+  font-size: var(--size-title-role);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.lead {
+  white-space: nowrap;
+}
+
+/* The filled block, matching the "Let's talk" button: pale fill, dark label.
+   Same pairing as BracketButton, so the two filled elements in the hero read as
+   one family rather than two competing accents. */
+.block {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.18em 0.55em;
+  border-radius: 8px;
+  background: var(--text-primary);
+  color: var(--canvas);
+  font-weight: var(--weight-semibold);
+}
+
+/* The reserved slot. JetBrains Mono has fixed character advances, so `ch` is an
+   exact measure: 9ch is "Architect", the longer of the two words. Reserving it
+   means the block never resizes on a swap, so the line width and everything
+   below it stay put - the one thing the brief is firm about here. */
+.slot {
+  display: inline-flex;
+  justify-content: center;
+  /* content-box matters: the reserved width is the text's, and the block's
+     padding has to sit outside it. With the default border-box the padding
+     eats into the 9ch and clips the longer word. */
+  box-sizing: content-box;
+  width: var(--rotating-slot-width);
+  overflow: hidden;
+}
+
+/* Clip the vertical travel to the line box so a word entering or leaving never
+   escapes the block. */
+.slotInner {
+  overflow: hidden;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+
+.static {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .title {
+    /* At 360px the full line cannot sit on one row; wrapping between the lead
+       and the rotating word is the only break that never splits a word. */
+    gap: 0.35em 0;
+    flex-direction: column;
+  }
+}

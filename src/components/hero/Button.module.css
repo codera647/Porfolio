@@ -1,0 +1,71 @@
+/* One consistent corner treatment, repeated across the page (s5.5).
+   Default, hover, pressed and keyboard focus states, with a focus ring that
+   stays visible on both the near black and the rust panel (s5.12). */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  min-width: var(--hit-min);
+  padding: 0 22px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: var(--size-nav);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--ease-soft),
+    border-color 180ms var(--ease-soft),
+    color 180ms var(--ease-soft),
+    transform 120ms var(--ease-soft);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+/* Orange fill, dark label. */
+.primary {
+  background: var(--orange);
+  color: var(--on-orange);
+}
+
+.primary:hover {
+  background: #ff6a44;
+}
+
+/* Transparent fill, off white outline at ~30%, off white label. */
+.secondary {
+  background: transparent;
+  border-color: var(--outline-quiet);
+  color: var(--text-primary);
+}
+
+.secondary:hover {
+  border-color: rgb(248 248 248 / 62%);
+  background: rgb(248 248 248 / 6%);
+}
+
+.arrow {
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button:active {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .button {
+    /* Full width, 48-52px high when the row stacks (s5.10). */
+    width: 100%;
+    min-height: 50px;
+  }
+}

@@ -1,0 +1,27 @@
+/* Nav, inside the hero (s5.5). Static signature upper left, one action upper
+   right. No second brand mark, no oversized nav panel. */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  /* ~120 x 40px. The hit area clears 44px even though the lettering is small. */
+  min-height: var(--hit-min);
+}
+
+.mark img {
+  width: 120px;
+  height: auto;
+}
+
+@media (max-width: 700px) {
+  .mark img {
+    width: 96px;
+  }
+}

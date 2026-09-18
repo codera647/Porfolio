@@ -1,0 +1,109 @@
+/* The name (s5.4, s5.8). Readable immediately, before anyone discovers the
+   interaction. Fixed baseline, fixed letter height, nothing reflows. */
+
+.name {
+  margin: 0;
+  font-size: var(--size-name);
+  line-height: var(--lh-name);
+  font-weight: var(--weight-name-rest);
+  /* JetBrains Mono at the 180px cap only reaches ~77% of card width on its own,
+     and the brief wants 82-86% (s5.4). The remainder comes from tracking rather
+     than from oversizing the type past its stated range. A constant addition
+     keeps every advance fixed, so the pointer response still cannot reflow it. */
+  letter-spacing: 0.045em;
+  /* The pointer is not a button and the name is not clickable. */
+  cursor: default;
+  user-select: none;
+}
+
+.line {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: center;
+  /* A distinct gap between ABDUL and MOIZ (s5.4), tightened at Nex's request.
+     This is what sets the name's overall width, so see the note in the
+     verification record about it now sitting under the 82-86% band. */
+  gap: 0.3em;
+}
+
+.word {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.glyph {
+  display: inline-block;
+  /* Weight and a small local horizontal scale carry the feedback. JetBrains
+     Mono holds a fixed advance under weight change, and a transform never
+     affects layout, so the line width, the word gap and the CTA row below
+     cannot move no matter what the pointer does (s5.8). */
+  font-variation-settings: "wght" var(--w, 280);
+  transform: scaleX(var(--sx, 0.88));
+  transform-origin: 50% 50%;
+  will-change: transform, font-variation-settings;
+
+  /* One pale vertical gradient, identical across both panels. Every glyph box
+     shares the same line height, so the per glyph gradients line up into one
+     continuous ramp, and scaleX does not disturb a vertical gradient (s5.3). */
+  background: var(--name-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--text-primary);
+}
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .glyph {
+    color: transparent;
+  }
+}
+
+/* ---- entrance (s5.7) ---------------------------------------------------
+   The name rises through a baseline mask with small left to right offsets and
+   settles without overshoot. */
+.masked {
+  overflow: hidden;
+  /* Room for the descender free font to breathe without clipping the cap. */
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+
+.glyph[data-enter="pending"] {
+  opacity: 0;
+  transform: translateY(0.18em) scaleX(var(--sx, 0.88));
+}
+
+.glyph[data-enter="in"] {
+  opacity: 1;
+  transform: translateY(0) scaleX(var(--sx, 0.88));
+  transition:
+    opacity 380ms var(--ease-soft),
+    transform 520ms var(--ease-card);
+  transition-delay: var(--enter-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glyph,
+  .glyph[data-enter="pending"],
+  .glyph[data-enter="in"] {
+    opacity: 1;
+    transform: scaleX(var(--sx, 0.88));
+    transition: none;
+  }
+}
+
+/* ---- responsive (s5.10) ------------------------------------------------ */
+@media (max-width: 700px) {
+  /* Exactly two centred lines, ABDUL then MOIZ, never split inside a word.
+     align-items has to be set: the base rule uses `baseline`, which in a column
+     falls back to start and packs both words against the left edge. */
+  .line {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .word {
+    justify-content: center;
+  }
+}

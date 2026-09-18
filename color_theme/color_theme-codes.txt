@@ -1,0 +1,42 @@
+Your selected colors (v3, exact match to the Folioblox reference):
+
+    Text: #f8f8f8 - rgb(248, 248, 248) - hsl(0, 0%, 97%)
+    Background: #0c0c0c - rgb(12, 12, 12) - hsl(0, 0%, 5%)
+    Primary: #f9542a - rgb(249, 84, 42) - hsl(12, 95%, 57%)
+    Secondary: #87392a - rgb(135, 57, 42) - hsl(10, 53%, 35%)
+    Accent: #d9835a - rgb(217, 131, 90) - hsl(19, 63%, 60%)
+
+Realtime Colors link for selected colors: https://www.realtimecolors.com/?colors=f8f8f8-0c0c0c-f9542a-87392a-d9835a
+
+How this maps to the reference screenshot:
+    Text = the white headline/nav color sampled directly from the screenshot (#f8f8f8).
+    Background = the near black card/section background, sampled directly (#0c0c0c). This is a true neutral black, unlike the old teal tinted background.
+    Primary = the vivid flat orange used for the CTA buttons, the "01/02/03/04" numbers, and the "Behind the Designs" label. This is now your main brand color, sampled directly (#f9542a, matched consistently across both reference screenshots).
+    Secondary = a deep rust/maroon pulled from the darkest part of the hero photo's gradient. Same structural role as before: card/border/divider use, not for text.
+    Accent = a warm amber pulled from the lighter, glowing part of the hero photo's gradient. Use for hover states, secondary highlights, or a softer alternative to Primary.
+
+The reference is a monochromatic warm theme (black, white, and one orange hue family at different values), so unlike the v1/v2 palettes there is no cool color left anywhere in this one. That is a real identity shift, not just an accent swap.
+
+Contrast notes (WCAG, checked against Background #0c0c0c):
+    Text 18.4:1, Primary 5.9:1, Accent 6.8:1 - all safe for body copy and small text.
+    Secondary 2.47:1 - surface/border use only, do not set it as a text color.
+    Text on Primary (white text on an orange button) is 3.12:1, which only passes for large or bold text, not small regular text. Keep CTA button labels bold, or switch to dark text on orange buttons if you want smaller label text, this matches what the reference itself does on some buttons (dark text on the white pill button, white bold text on the solid orange button).
+    Primary and Accent on Secondary both fail contrast (2.39:1 and 2.77:1), so don't put orange or amber text on a rust colored card, use Text there instead.
+
+Reference: Folioblox style warm gradient portfolio (orange to black hero photo, "Creative Director" headline), two screenshots shared 2026-09-13. User asked to match this exactly rather than blend it, so this replaces the v2 hybrid attempt as the current theme.
+
+--- Earlier palettes, kept for reference ---
+
+v2 hybrid (teal base + orange accent, superseded):
+    Text: #f3ede7 - rgb(243, 237, 231) - hsl(30, 33%, 93%)
+    Background: #06110e - rgb(6, 17, 14) - hsl(164, 48%, 5%)
+    Primary: #96d7c9 - rgb(150, 215, 201) - hsl(167, 45%, 72%)
+    Secondary: #7f4229 - rgb(127, 66, 41) - hsl(17, 51%, 33%)
+    Accent: #f4592a - rgb(244, 89, 42) - hsl(14, 90%, 56%)
+
+v1 original (teal/mint on near black with blue accents, superseded):
+    Text: #e0f3ef - rgb(224, 243, 239) - hsl(167, 44%, 92%)
+    Background: #06110e - rgb(6, 17, 14) - hsl(164, 48%, 5%)
+    Primary: #96d7c9 - rgb(150, 215, 201) - hsl(167, 45%, 72%)
+    Secondary: #2b5370 - rgb(43, 83, 112) - hsl(205, 45%, 30%)
+    Accent: #4972b9 - rgb(73, 114, 185) - hsl(218, 44%, 51%)

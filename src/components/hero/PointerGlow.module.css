@@ -1,0 +1,69 @@
+/* The pointer gradient (s5.9). Layered above the two base panels and below
+   every text and control layer, clipped to the card's rounded corners. The
+   split stays visible through it. It never receives input. */
+
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Normal compositing. No screen or additive blending: the contrast bounds in
+     s5.3 were measured for a normal composite. */
+  mix-blend-mode: normal;
+}
+
+.blob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  /* Edges blurred and diffuse: no visible circular outline, no rectangular
+     texture seam. The radial stop does the falloff; the blur removes the last
+     trace of a rim. */
+  filter: blur(28px);
+  will-change: transform;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.primary {
+  width: var(--glow-primary-size);
+  height: var(--glow-primary-size);
+  background: radial-gradient(
+    circle closest-side,
+    rgb(249 84 42 / var(--glow-primary-alpha)) 0%,
+    rgb(249 84 42 / calc(var(--glow-primary-alpha) * 0.55)) 42%,
+    rgb(249 84 42 / 0%) 100%
+  );
+}
+
+.secondary {
+  width: var(--glow-secondary-size);
+  height: var(--glow-secondary-size);
+  background: radial-gradient(
+    circle closest-side,
+    rgb(217 131 90 / var(--glow-secondary-alpha)) 0%,
+    rgb(217 131 90 / calc(var(--glow-secondary-alpha) * 0.5)) 45%,
+    rgb(217 131 90 / 0%) 100%
+  );
+  filter: blur(34px);
+}
+
+/* A restrained darker rust softening the tail, well under the two fields. */
+.tail {
+  width: calc(var(--glow-primary-size) * 1.15);
+  height: calc(var(--glow-primary-size) * 1.15);
+  background: radial-gradient(
+    circle closest-side,
+    rgb(135 57 42 / 14%) 0%,
+    rgb(135 57 42 / 0%) 100%
+  );
+  filter: blur(44px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Frozen field: it sits at its resting position and stays there. */
+  .blob {
+    will-change: auto;
+  }
+}

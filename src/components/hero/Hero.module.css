@@ -1,0 +1,316 @@
+/* The hero card (s5.5). One rounded frame inset from every viewport edge,
+   holding the split panels, the pointer field and the whole composition. */
+
+.stage {
+  /* The card owns roughly the first viewport; short screens scroll rather than
+     crop the controls (s5.5). */
+  min-height: 100svh;
+  padding: var(--card-inset);
+  display: flex;
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  min-height: calc(100svh - var(--card-inset) * 2);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--hairline);
+  background: var(--canvas);
+  overflow: hidden;
+  /* Present, but nowhere near a floating glass slab (s5.5). */
+  box-shadow: 0 24px 70px rgb(0 0 0 / 45%);
+}
+
+/* ---- entrance (s5.7) ---------------------------------------------------
+   The card opens once from nearly edge on and settles front on. It never keeps
+   rotating. Text runs on its own schedule so nothing is read while distorted. */
+.entering {
+  opacity: 0;
+  transform: perspective(1200px) rotateX(68deg) scale(0.88);
+  transform-origin: 50% 100%;
+}
+
+.opening {
+  opacity: 1;
+  transform: perspective(1200px) rotateX(0deg) scale(1);
+  transition:
+    opacity var(--card-reveal) var(--ease-card),
+    transform var(--card-reveal) var(--ease-card);
+}
+
+.settled {
+  opacity: 1;
+  transform: none;
+}
+
+/* Mobile and reduced motion replace the perspective entrance with a short fade
+   and a small rise (s5.10, s5.12). */
+@media (max-width: 600px), (prefers-reduced-motion: reduce) {
+  .entering {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .opening {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 520ms var(--ease-soft),
+      transform 520ms var(--ease-soft);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The static design is a complete state, not a loading placeholder. */
+  .entering {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- panels (s5.3) -----------------------------------------------------
+   Near black left, deep rust right, divided by a broad gentle curve. The
+   division stays fixed while the glow moves across it. */
+.panels {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--canvas);
+}
+
+/* The rust panel is a tall, exactly periodic wave sliding behind a window.
+
+   The previous version animated the clip path's `d` between phase-shifted
+   keyframes. CSS interpolates each control point along a straight line, so the
+   motion kinked at every keyframe and the amplitude pulsed between them - that
+   is what read as glitching and as the loop stopping and restarting. It also
+   re-rasterised the clip every frame, costing about a third of the frame budget.
+
+   Here the shape never changes. The wave element is four card-heights tall with
+   one period per card height, and it translates up by exactly one period before
+   looping, so the visible window is identical at both ends of the cycle. The
+   motion is a plain transform, which the compositor can carry, and it is
+   perfectly constant speed because nothing is being interpolated. */
+.rustViewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.rustWave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Tall enough that the card window never reaches either end, at any point in
+     the cycle: the element spans -150% to 250% of the card, and -250% to 150%
+     once it has travelled its full period. */
+  top: -150%;
+  height: 400%;
+  background: var(--rust);
+  clip-path: url(#am-hero-split);
+  animation: am-split-drift 18s linear infinite;
+  will-change: transform;
+}
+
+@keyframes am-split-drift {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    /* One period: a quarter of a four-period element. */
+    transform: translateY(-25%);
+  }
+}
+
+/* Subtle static grain (s2), confined to the rust side. It lives inside the wave
+   so the clip carries it, and counter-translates by exactly the wave's travel so
+   the texture stays put while the shape moves under it. */
+.rustWave::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain-tile);
+  background-repeat: repeat;
+  background-size: 160px 160px;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: am-grain-hold 18s linear infinite;
+}
+
+@keyframes am-grain-hold {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(25%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Frozen, like the glow. The wave is still a wave, it just does not travel. */
+  .rustWave,
+  .rustWave::after {
+    animation: none;
+  }
+}
+
+/* ---- composition (s5.5) ------------------------------------------------
+   Centred on the whole card, not on either half. */
+.content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  gap: 24px;
+}
+
+.centre {
+  /* Three rows with the name in the middle one, and the outer two given equal
+     space, so the name lands on the card's vertical midline no matter how tall
+     the role line or the sentence get. Nex asked for it centred rather than
+     riding high, which is what the old flex column did once the CTA row went. */
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+}
+
+.role {
+  /* Sits just above the name rather than at the top of its row. */
+  align-self: end;
+  margin-bottom: 34px;
+}
+
+/* Narrower than the gap it sits in, and centred there, so it reads as a
+   contained band rather than as filler stretched between its neighbours. */
+.tech {
+  width: min(100%, var(--tech-band-width));
+  justify-self: center;
+}
+
+/* ---- bottom utility row (s5.5) -----------------------------------------
+   Quiet, and separate from the CTA row. */
+.utility {
+  /* Three: the line, the tech strip, the profile marks. `minmax(0, 1fr)` rather
+     than `1fr` so the middle track can actually shrink - a default grid track
+     will not go below its content's width. */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: calc(var(--utility-bottom) - var(--card-pad-y));
+  font-size: var(--size-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: rgb(248 248 248 / 58%);
+}
+
+.utilityRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+/* The lettering here is deliberately small and quiet, but a 19px tall link is
+   not a usable target. Grow the hit area around the text with an overlay rather
+   than with padding, so the row keeps its position and the type keeps its size
+   (s5.12: small visible lettering must not imply a tiny hit target). */
+.utilityRight a {
+  position: relative;
+  display: inline-block;
+}
+
+.utilityRight a::after {
+  content: "";
+  position: absolute;
+  inset: -13px -10px;
+}
+
+.utilityRight a:hover,
+.utilityRight a:focus-visible,
+.utilityLeft a:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Lower centre, with a generous hit area despite the small lettering (s5.5). */
+.scrollCue {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  justify-self: center;
+  min-height: var(--hit-min);
+  padding: 6px 18px;
+  color: inherit;
+  transition: color 160ms var(--ease-soft);
+}
+
+.scrollCue:hover,
+.scrollCue:focus-visible {
+  color: var(--text-primary);
+}
+
+/* ---- staged reveal (s5.7) ----------------------------------------------
+   Supporting text moves only 10-14px and never overshoots. */
+.reveal {
+  opacity: 0;
+  transform: translateY(11px);
+}
+
+.revealed {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 420ms var(--ease-soft),
+    transform 420ms var(--ease-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .utility {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  /* The metadata line is the first thing to go when space is tight (s5.10);
+     the profile marks stay, since they are now the only thing in this row. */
+  .utilityLeft {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  /* A visible curved split, wider at the top and narrower at the bottom, and
+     no third stripe (s5.10). */
+  .rustWave {
+    clip-path: url(#am-hero-split-mobile);
+  }
+
+  .stage {
+    padding: var(--card-inset);
+  }
+
+  .role {
+    margin-bottom: 22px;
+  }
+
+}

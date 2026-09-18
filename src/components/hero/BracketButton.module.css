@@ -1,0 +1,114 @@
+/* A pale filled button with crop-mark corners that step outward on hover.
+   Used for the nav's "Let's talk". */
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: var(--hit-min);
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: var(--text-primary);
+  color: var(--canvas);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--ease-soft),
+    color 200ms var(--ease-soft);
+}
+
+/* The small square before the label, as in the reference. */
+.marker {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  flex: none;
+}
+
+.corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--text-primary);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 200ms var(--ease-soft),
+    inset 260ms var(--ease-card);
+}
+
+/* Each corner keeps only the two borders that form its angle. */
+.tl {
+  top: 3px;
+  left: 3px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.tr {
+  top: 3px;
+  right: 3px;
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.bl {
+  bottom: 3px;
+  left: 3px;
+  border-right: 0;
+  border-top: 0;
+}
+
+.br {
+  bottom: 3px;
+  right: 3px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.button:hover .corner,
+.button:focus-visible .corner {
+  opacity: 1;
+}
+
+.button:hover .tl,
+.button:focus-visible .tl {
+  top: -8px;
+  left: -8px;
+}
+
+.button:hover .tr,
+.button:focus-visible .tr {
+  top: -8px;
+  right: -8px;
+}
+
+.button:hover .bl,
+.button:focus-visible .bl {
+  bottom: -8px;
+  left: -8px;
+}
+
+.button:hover .br,
+.button:focus-visible .br {
+  bottom: -8px;
+  right: -8px;
+}
+
+.button:hover {
+  background: var(--peach);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The brackets still mark the hover, they just snap into place instead of
+     travelling. Only the transition changes; the positions above still apply. */
+  .button,
+  .corner {
+    transition: none;
+  }
+}

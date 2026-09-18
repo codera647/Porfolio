@@ -1,0 +1,123 @@
+/* The tech strip: brand marks crossing the gap between the bottom-left line and
+   the profile marks, biggest at the centre of that gap and fading out at both
+   of its ends.
+
+   Section 5.2 warns against generic tech icons, so this stays pitched as a quiet
+   credit strip rather than a badge wall - monochrome, small, slow.
+
+   Every icon travels the same path, so one pair of keyframes describes the whole
+   effect and each icon simply starts further into it. Nothing needs to know
+   where any other icon is, nothing measures the band, and there is no JavaScript
+   in it at all: the browser composites sixteen transforms and opacities.
+
+   The two animations have to be separate. Travel belongs to a wrapper as wide as
+   the band, so a percentage translate is band-relative; scale belongs to the
+   mark itself, because scaling the full-width wrapper would move the icon
+   sideways as well as resize it. They share a duration and a delay, so they stay
+   locked together. */
+
+.strip {
+  position: relative;
+  height: var(--tech-size);
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Full-band wrapper: `100%` of a translate here is one band width, which is what
+   lets the keyframes below name the borders and the centre without measuring. */
+.item {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  /* Shared by both animations so travel and scale never drift apart. */
+  --delay: calc(var(--i) * var(--tech-duration) / -16);
+  animation: am-tech-travel var(--tech-duration) linear infinite;
+  animation-delay: var(--delay);
+}
+
+.mark {
+  flex: none;
+  display: block;
+  width: var(--tech-size);
+  height: var(--tech-size);
+  color: var(--text-primary);
+  animation: am-tech-dial var(--tech-duration) linear infinite;
+  animation-delay: var(--delay);
+}
+
+/* Evenly spaced values, so travel is exactly constant speed and the scale and
+   fade ride on top without disturbing it.
+
+   150% is off-stage right, 100% the right border, 50% the centre, 0% the left
+   border, -50% off-stage left. */
+@keyframes am-tech-travel {
+  from {
+    transform: translateX(150%);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Biggest and fully opaque at the centre, tapering to both borders. Fading in
+   begins at the right border and fading out finishes at the left one, so no mark
+   is ever cut off by the edge of the band. */
+@keyframes am-tech-dial {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  25% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  37.5% {
+    transform: scale(0.84);
+    opacity: 0.62;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 0.72;
+  }
+
+  62.5% {
+    transform: scale(0.84);
+    opacity: 0.62;
+  }
+
+  75% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Everything stops where it is. Because each mark carries its own delay, they
+     freeze spread across the band rather than piling up, so the strip still
+     reads as a row of marks. */
+  .item,
+  .mark {
+    animation-play-state: paused;
+  }
+}
+
+/* Below this the bottom-left line is gone, so there is no gap for the strip to
+   sit between and the whole idea stops working. Dropped outright rather than
+   restaged - the same call section 5.10 makes about the metadata line. */
+@media (max-width: 900px) {
+  .strip {
+    display: none;
+  }
+}
