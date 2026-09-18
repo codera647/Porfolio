@@ -17,13 +17,6 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Abdul Moiz",
   description: "Machine Learning Engineer / Architect. Ideas, built with intention.",
-  icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/favicon.ico" },
-    ],
-    apple: "/apple-icon.png",
-  },
 };
 
 export const viewport: Viewport = {
@@ -56,3 +49,4 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
+
