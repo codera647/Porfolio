@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import IntroStage from "@/components/intro/IntroStage";
+import Philosophy from "@/components/philosophy/Philosophy";
 
 /**
  * The animated signature is inlined rather than linked.
@@ -29,6 +30,7 @@ export default async function Home() {
   return (
     <main>
       <IntroStage signature={signature} />
+      <Philosophy />
     </main>
   );
 }

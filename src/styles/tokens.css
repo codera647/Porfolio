@@ -98,7 +98,14 @@
      per frame cost; desaturated so it reads as grain rather than colour
      speckle over the rust. */
   --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.55'/%3E%3C/svg%3E");
+
+  /* ---- philosophy section (s5.11) ----------------------------------------
+     Box is the contained hand stage. Radius matches the hero card family
+     but smaller — this is a content element, not a frame.               */
+  --phil-box-radius: 20px;
+  --phil-section-gap: 120px;
 }
+
 
 /* Tablet 834px: 20px margins, 26-28px radius, 28-36px internal padding. */
 @media (max-width: 1024px) {

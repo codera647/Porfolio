@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { INTRO_GATE_SCRIPT } from "@/lib/introGate";
+import { LenisProvider } from "@/providers/LenisProvider";
 import "./globals.css";
 
 /* One typeface for the whole site (s5.4). No weight list: this pulls the
@@ -16,6 +17,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Abdul Moiz",
   description: "Machine Learning Engineer / Architect. Ideas, built with intention.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: "/apple-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -44,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: INTRO_GATE_SCRIPT }} />
       </head>
-      <body>{children}</body>
+      <body><LenisProvider>{children}</LenisProvider></body>
     </html>
   );
 }
