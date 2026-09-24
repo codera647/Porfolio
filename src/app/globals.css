@@ -26,7 +26,10 @@ html {
 
 body {
   min-height: 100svh;
-  background: var(--canvas);
+  background-color: var(--canvas);
+  background-image: var(--grain-soft);
+  background-repeat: repeat;
+  background-size: 160px 160px;
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: var(--size-body);

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0C0C0C",
+  themeColor: "#303030",
   colorScheme: "dark",
 };
 
@@ -45,7 +45,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: INTRO_GATE_SCRIPT }} />
       </head>
-      <body><LenisProvider>{children}</LenisProvider></body>
+      {/* Browser writing assistants such as Grammarly add data attributes to
+          body before React starts. Suppression belongs on this exact element;
+          the html-level flag above does not apply to descendants. */}
+      <body suppressHydrationWarning>
+        <LenisProvider>{children}</LenisProvider>
+      </body>
     </html>
   );
 }

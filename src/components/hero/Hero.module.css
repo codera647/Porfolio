@@ -16,12 +16,11 @@
   min-height: calc(100svh - var(--card-inset) * 2);
   display: flex;
   flex-direction: column;
-  border-radius: var(--card-radius);
-  border: 1px solid var(--hairline);
+  border: 0;
+  border-radius: 0;
   background: var(--canvas);
   overflow: hidden;
-  /* Present, but nowhere near a floating glass slab (s5.5). */
-  box-shadow: 0 24px 70px rgb(0 0 0 / 45%);
+  box-shadow: none;
 }
 
 /* ---- entrance (s5.7) ---------------------------------------------------
@@ -78,7 +77,10 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: var(--canvas);
+  background-color: var(--canvas);
+  background-image: var(--grain-soft);
+  background-repeat: repeat;
+  background-size: 160px 160px;
 }
 
 /* The rust panel is a tall, exactly periodic wave sliding behind a window.
@@ -136,7 +138,7 @@
   background-image: var(--grain-tile);
   background-repeat: repeat;
   background-size: 160px 160px;
-  opacity: 0.09;
+  opacity: 0.28;
   mix-blend-mode: overlay;
   pointer-events: none;
   animation: am-grain-hold 18s linear infinite;

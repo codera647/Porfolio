@@ -3,7 +3,7 @@
 
 :root {
   /* ---- colour (s5.3) -------------------------------------------------- */
-  --canvas: #0c0c0c; /* page background, left hero panel, dark button labels */
+  --canvas: #303030; /* page background, left hero panel, dark button labels */
   --text-primary: #f8f8f8; /* nav, body, signature, primary heading tone     */
   --orange: #f9542a; /* main CTA fill, active details, principal glow        */
   --rust: #87392a; /* right hero panel, warm surfaces, dividers              */
@@ -51,8 +51,8 @@
   --weight-name-rest: 280; /* s5.4: 250-300                                 */
 
   /* ---- layout (s5.5, s5.10) ------------------------------------------- */
-  --card-inset: 24px; /* desktop; 20px tablet, 12px mobile below            */
-  --card-radius: 32px;
+  --card-inset: 0px; /* sections run edge-to-edge rather than inside shells */
+  --card-radius: 0px;
   --card-pad-x: 52px; /* s5.5: 48-56px                                      */
   --card-pad-y: 44px;
   --split-top: 64%; /* curved divider, s5.3                                 */
@@ -98,6 +98,7 @@
      per frame cost; desaturated so it reads as grain rather than colour
      speckle over the rust. */
   --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.55'/%3E%3C/svg%3E");
+  --grain-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.16'/%3E%3C/svg%3E");
 
   /* ---- philosophy section (s5.11) ----------------------------------------
      Box is the contained hand stage. Radius matches the hero card family
@@ -110,8 +111,8 @@
 /* Tablet 834px: 20px margins, 26-28px radius, 28-36px internal padding. */
 @media (max-width: 1024px) {
   :root {
-    --card-inset: 20px;
-    --card-radius: 27px;
+    --card-inset: 0px;
+    --card-radius: 0px;
     --card-pad-x: 32px;
     --card-pad-y: 32px;
     --glow-primary-size: 320px;
@@ -123,8 +124,8 @@
    22-24px internal side padding, split 65% at top to 45% at bottom. */
 @media (max-width: 600px) {
   :root {
-    --card-inset: 12px;
-    --card-radius: 22px;
+    --card-inset: 0px;
+    --card-radius: 0px;
     --card-pad-x: 23px;
     --card-pad-y: 24px;
     --split-top: 65%;

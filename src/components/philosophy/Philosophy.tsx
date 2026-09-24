@@ -8,10 +8,10 @@ import styles from "./Philosophy.module.css";
  * Philosophy Section with ScrollExpand cinematic animation.
  *
  * Recreates the exact experience from the reference video:
- * 1. Initial State: Centered compact rounded card, blurred crimson Michelangelo
+ * 1. Initial State: Centered compact square card, blurred crimson Michelangelo
  *    hands image (14px Gaussian blur, 1.4x zoom), with "THE PHILOSOPHY" title overlaid.
  * 2. Scroll Expansion: As the user scrolls through the 250vh track, the card smoothly
- *    expands using clip-path to 100% full viewport width and height (radius 20px -> 0px).
+ *    expands using clip-path to 100% full viewport width and height.
  *    Simultaneously, the blur clears (14px -> 0px) and the zoom eases down (1.4x -> 1.0x).
  * 3. Title Transition: The large "THE PHILOSOPHY" header lifts up and fades away.
  * 4. Revealed Philosophy: A dark scrim settles and the full statement fades in over
@@ -48,21 +48,20 @@ export function Philosophy() {
     const updateDimensions = () => {
       const w = window.innerWidth;
       if (w <= 600) {
-        return { startW: 76, startH: 44, startR: 18 };
+        return { startW: 76, startH: 44 };
       }
       if (w <= 1024) {
-        return { startW: 54, startH: 48, startR: 20 };
+        return { startW: 54, startH: 48 };
       }
-      return { startW: 38, startH: 52, startR: 22 };
+      return { startW: 38, startH: 52 };
     };
 
-    let { startW, startH, startR } = updateDimensions();
+    let { startW, startH } = updateDimensions();
 
     const handleResize = () => {
       const dims = updateDimensions();
       startW = dims.startW;
       startH = dims.startH;
-      startR = dims.startR;
     };
 
     const render = (progress: number) => {
@@ -71,14 +70,9 @@ export function Philosophy() {
       const currentH = startH + (100 - startH) * progress;
       const insetX = Math.max(0, (100 - currentW) / 2);
       const insetY = Math.max(0, (100 - currentH) / 2);
-      const endR = window.innerWidth <= 600 ? 22 : window.innerWidth <= 1024 ? 27 : 32;
-      const currentR = Math.max(0, startR + (endR - startR) * progress);
-
       frame.style.clipPath = `inset(${insetY.toFixed(2)}% ${insetX.toFixed(
         2
-      )}% ${insetY.toFixed(2)}% ${insetX.toFixed(2)}% round ${currentR.toFixed(
-        1
-      )}px)`;
+      )}% ${insetY.toFixed(2)}% ${insetX.toFixed(2)}%)`;
 
       // 2. Media zoom & un-blur (hands remain completely visible, dipping only slightly to 88%)
       const scale = 1.4 - 0.4 * progress;

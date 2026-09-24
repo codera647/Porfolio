@@ -3,10 +3,12 @@
 .section {
   position: relative;
   width: 100%;
-  background: var(--canvas);
+  background-color: var(--canvas);
+  background-image: var(--grain-soft);
+  background-repeat: repeat;
+  background-size: 160px 160px;
   color: var(--text-primary);
-  /* Boundary styling between hero and philosophy */
-  margin-top: 60px;
+  margin-top: 0;
 }
 
 /* ── Track: gives the scroll room for the expansion animation ────────────── */
@@ -44,11 +46,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: var(--card-radius);
-  border: 1px solid var(--hairline);
-  background: var(--canvas);
+  border: 0;
+  border-radius: 0;
+  background-color: var(--canvas);
+  background-image: var(--grain-soft);
+  background-repeat: repeat;
+  background-size: 160px 160px;
   overflow: hidden;
-  box-shadow: 0 24px 70px rgb(0 0 0 / 45%);
+  box-shadow: none;
 }
 
 /* ── Expanding Frame: clip-path handles expansion capped inside the card ──── */
@@ -58,10 +63,10 @@
   inset: 0;
   will-change: clip-path;
   overflow: hidden;
-  background: #000000;
-  border-radius: var(--card-radius);
+  background: var(--canvas);
+  border-radius: 0;
   /* Default un-scrolled fallback */
-  clip-path: inset(22% 30% 22% 30% round 20px);
+  clip-path: inset(22% 30% 22% 30%);
 }
 
 /* ── Background Image: hands photo with scale and blur transitions ───────── */
@@ -78,7 +83,7 @@
   pointer-events: none;
   -webkit-user-drag: none;
   /* Subtle dark color grading that naturally integrates with the site canvas */
-  background: #000000;
+  background: var(--canvas);
 }
 
 /* ── Scrim: darkens image so overlaid paragraph has razor-sharp contrast ─── */
@@ -89,9 +94,9 @@
   pointer-events: none;
   background: radial-gradient(
     ellipse 65% 60% at 50% 50%,
-    rgba(12, 12, 12, 0.62) 0%,
-    rgba(12, 12, 12, 0.35) 55%,
-    rgba(12, 12, 12, 0) 100%
+    rgb(48 48 48 / 62%) 0%,
+    rgb(48 48 48 / 35%) 55%,
+    rgb(48 48 48 / 0%) 100%
   );
   opacity: 0;
   will-change: opacity;
