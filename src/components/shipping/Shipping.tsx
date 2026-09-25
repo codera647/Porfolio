@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import { TECH_ICONS } from "@/vendor/simple-icons/techIcons";
 import styles from "./Shipping.module.css";
 
+const SHIPPING_FOLLOW_THROUGH_MS = 285;
+
 const TOOL_SLUGS = [
   "python",
   "pytorch",
@@ -150,11 +152,12 @@ export function Shipping() {
 
         const segmentStart = (index - 1) / transitionCount;
         const segmentSize = 1 / transitionCount;
-        // Move for the first part of a segment, then hold the card still long
-        // enough to read before the following card covers it.
+        // Hold briefly before and after each entrance. Smoothstep has zero
+        // velocity at both ends, so a delayed card never snaps into motion.
+        const segmentProgress = (progress - segmentStart) / segmentSize;
         const local = Math.min(
           1,
-          Math.max(0, (progress - segmentStart) / (segmentSize * 0.84)),
+          Math.max(0, (segmentProgress - 0.1) / 0.8),
         );
         setCardProgress(card, index, local);
       });
@@ -172,7 +175,7 @@ export function Shipping() {
       previousFrameTime = time;
       // Time-based damping keeps the same feel on 60 Hz and high-refresh
       // displays and gently catches up after larger wheel/trackpad deltas.
-      const damping = 1 - Math.exp(-elapsed / 180);
+      const damping = 1 - Math.exp(-elapsed / SHIPPING_FOLLOW_THROUGH_MS);
       currentProgress += (targetProgress - currentProgress) * damping;
       if (Math.abs(targetProgress - currentProgress) < 0.0005) {
         currentProgress = targetProgress;

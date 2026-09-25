@@ -8,7 +8,7 @@
 .track {
   position: relative;
   width: 100%;
-  height: 420svh;
+  height: 500svh;
 }
 
 .stage {
@@ -320,7 +320,7 @@
   }
 
   .track {
-    height: 400svh;
+    height: 480svh;
   }
 
   .content {

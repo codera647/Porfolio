@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import styles from "./Experience.module.css";
 
+const EXPERIENCE_FOLLOW_THROUGH_MS = 270;
+
 const EXPERIENCES = [
   {
     company: "kinetiq",
@@ -159,7 +161,7 @@ export function Experience() {
     const tick = (time: number) => {
       const elapsed = Math.min(64, time - previousFrameTime);
       previousFrameTime = time;
-      const damping = 1 - Math.exp(-elapsed / 150);
+      const damping = 1 - Math.exp(-elapsed / EXPERIENCE_FOLLOW_THROUGH_MS);
       currentProgress += (targetProgress - currentProgress) * damping;
 
       if (Math.abs(targetProgress - currentProgress) < 0.0004) {

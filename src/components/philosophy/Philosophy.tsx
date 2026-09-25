@@ -4,6 +4,11 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import styles from "./Philosophy.module.css";
 
+// A short, time-based follow-through keeps the image from reacting instantly
+// to large wheel/trackpad deltas. Because it is measured in milliseconds, the
+// feel remains consistent across 60 Hz and high-refresh displays.
+const PHILOSOPHY_FOLLOW_THROUGH_MS = 280;
+
 /**
  * Philosophy Section with ScrollExpand cinematic animation.
  *
@@ -44,6 +49,7 @@ export function Philosophy() {
     let rafId: number | null = null;
     let targetProgress = 0;
     let currentProgress = 0;
+    let previousFrameTime = performance.now();
 
     const updateDimensions = () => {
       const w = window.innerWidth;
@@ -133,10 +139,14 @@ export function Philosophy() {
       return Math.min(1, Math.max(0, scrolled / totalDistance));
     };
 
-    const tick = () => {
-      // Smooth lerp for buttery animation
-      currentProgress += (targetProgress - currentProgress) * 0.12;
-      if (Math.abs(targetProgress - currentProgress) < 0.001) {
+    const tick = (time: number) => {
+      const elapsed = Math.min(64, time - previousFrameTime);
+      previousFrameTime = time;
+      const damping = 1 - Math.exp(
+        -elapsed / PHILOSOPHY_FOLLOW_THROUGH_MS,
+      );
+      currentProgress += (targetProgress - currentProgress) * damping;
+      if (Math.abs(targetProgress - currentProgress) < 0.0005) {
         currentProgress = targetProgress;
       }
 
@@ -152,6 +162,7 @@ export function Philosophy() {
     const handleScroll = () => {
       targetProgress = computeProgress();
       if (rafId === null) {
+        previousFrameTime = performance.now();
         rafId = requestAnimationFrame(tick);
       }
     };
