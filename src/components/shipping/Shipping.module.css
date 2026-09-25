@@ -254,6 +254,7 @@
 
 .tags {
   display: flex;
+  width: 100%;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: auto;
@@ -339,15 +340,47 @@
 
   .deck {
     width: 100%;
-    height: 286px;
+    height: 356px;
     justify-self: stretch;
   }
 
   .serviceCard {
-    top: 18px;
-    height: 250px;
-    padding: 21px;
+    top: 13px;
+    height: 330px;
+    padding: 18px;
     border-radius: 18px;
+  }
+
+  .cardIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cardIcon svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .cardTitle {
+    margin-top: 14px;
+    font-size: 1.1rem;
+  }
+
+  .description {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .tags {
+    gap: 6px;
+    padding-top: 14px;
+  }
+
+  .tag {
+    min-height: 28px;
+    padding: 6px 9px;
+    font-size: 0.65rem;
   }
 
   .tool {
