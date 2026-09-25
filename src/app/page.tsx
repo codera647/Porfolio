@@ -3,6 +3,7 @@ import path from "node:path";
 import IntroStage from "@/components/intro/IntroStage";
 import Philosophy from "@/components/philosophy/Philosophy";
 import Shipping from "@/components/shipping/Shipping";
+import Experience from "@/components/experience/Experience";
 
 /**
  * The animated signature is inlined rather than linked.
@@ -33,6 +34,7 @@ export default async function Home() {
       <IntroStage signature={signature} />
       <Philosophy />
       <Shipping />
+      <Experience />
     </main>
   );
 }
