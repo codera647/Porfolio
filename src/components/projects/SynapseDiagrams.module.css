@@ -1,0 +1,224 @@
+.figure {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+}
+
+.shell {
+  overflow: hidden;
+  padding: clamp(18px, 3vw, 42px);
+  border: 1px solid rgb(248 248 248 / 16%);
+  border-radius: clamp(20px, 2vw, 30px);
+  background:
+    var(--grain-soft),
+    linear-gradient(145deg, rgb(248 248 248 / 3%), transparent 42%),
+    #242424;
+  background-repeat: repeat, no-repeat;
+  background-size: 160px 160px, auto;
+}
+
+.diagramTitle {
+  display: flex;
+  padding-bottom: 22px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid rgb(248 248 248 / 11%);
+}
+
+.diagramTitle span:first-child {
+  font-size: clamp(1rem, 1.7vw, 1.55rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.035em;
+}
+
+.diagramTitle span:last-child,
+.columnLabels {
+  font-size: clamp(0.54rem, 0.66vw, 0.65rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.11em;
+  color: rgb(248 248 248 / 38%);
+  text-transform: uppercase;
+}
+
+.columnLabels {
+  --columns: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  padding: 24px 8px 18px;
+  text-align: center;
+}
+
+.node {
+  display: grid;
+  min-width: 150px;
+  min-height: 82px;
+  padding: 15px 16px;
+  place-content: center;
+  border: 1px solid rgb(248 248 248 / 22%);
+  border-radius: 15px;
+  text-align: center;
+  background: rgb(9 9 9 / 58%);
+}
+
+.node.accent {
+  border-color: rgb(135 57 42 / 96%);
+  background:
+    var(--grain-tile),
+    rgb(135 57 42 / 58%);
+  background-size: 160px 160px;
+  background-blend-mode: soft-light;
+}
+
+.node strong {
+  font-size: clamp(0.72rem, 0.92vw, 0.9rem);
+  font-weight: var(--weight-semibold);
+  line-height: 1.25;
+}
+
+.node span {
+  margin-top: 6px;
+  font-size: clamp(0.58rem, 0.7vw, 0.68rem);
+  line-height: 1.35;
+  color: rgb(248 248 248 / 55%);
+}
+
+.arrow,
+.arrowDown {
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: var(--rust);
+  font-size: clamp(1.4rem, 2vw, 2.1rem);
+  line-height: 1;
+}
+
+.arrow {
+  min-width: 34px;
+}
+
+.arrowDown {
+  min-height: 33px;
+}
+
+.arrowDown small {
+  position: absolute;
+  right: calc(50% + 16px);
+  top: 50%;
+  color: rgb(248 248 248 / 35%);
+  font-size: 0.55rem;
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+.stack {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.architecture,
+.chatFlow,
+.deployment {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+}
+
+.architecture .stack:last-child {
+  gap: 10px;
+}
+
+.chatFlow .outcomes {
+  display: grid;
+  flex: 1;
+  gap: 11px;
+}
+
+.or {
+  color: rgb(248 248 248 / 30%);
+  font-size: 0.6rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.flowRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flowStep {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+}
+
+.flowStep .node {
+  width: 100%;
+  min-width: 0;
+}
+
+.persisted {
+  width: min(82%, 760px);
+  padding: 14px 18px;
+  margin: 26px auto 0;
+  border: 1px solid rgb(248 248 248 / 14%);
+  border-radius: 12px;
+  color: rgb(248 248 248 / 50%);
+  background: rgb(9 9 9 / 34%);
+  font-size: clamp(0.58rem, 0.75vw, 0.72rem);
+  text-align: center;
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(26px, 7vw, 100px);
+}
+
+.zone {
+  display: grid;
+  min-width: 230px;
+  padding: 30px 16px 16px;
+  gap: 12px;
+  border: 1px dashed rgb(248 248 248 / 19%);
+  border-radius: 18px;
+}
+
+.zone > span {
+  margin-top: -20px;
+  color: rgb(248 248 248 / 38%);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.figure figcaption {
+  padding-top: 13px;
+  font-size: clamp(0.64rem, 0.78vw, 0.75rem);
+  line-height: 1.5;
+  color: rgb(248 248 248 / 46%);
+}
+
+@media (max-width: 820px) {
+  .shell {
+    overflow-x: auto;
+  }
+
+  .diagramTitle,
+  .columnLabels {
+    min-width: 760px;
+  }
+
+  .architecture,
+  .chatFlow,
+  .deployment,
+  .flowRow,
+  .dataGrid,
+  .persisted {
+    min-width: 760px;
+  }
+}

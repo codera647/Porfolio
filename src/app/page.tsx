@@ -4,6 +4,7 @@ import IntroStage from "@/components/intro/IntroStage";
 import Philosophy from "@/components/philosophy/Philosophy";
 import Shipping from "@/components/shipping/Shipping";
 import Experience from "@/components/experience/Experience";
+import Projects from "@/components/projects/Projects";
 
 /**
  * The animated signature is inlined rather than linked.
@@ -35,6 +36,7 @@ export default async function Home() {
       <Philosophy />
       <Shipping />
       <Experience />
+      <Projects />
     </main>
   );
 }

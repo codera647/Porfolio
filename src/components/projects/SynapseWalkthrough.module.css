@@ -1,0 +1,244 @@
+.section {
+  position: relative;
+  background: var(--canvas);
+}
+
+.track {
+  position: relative;
+  height: 780svh;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  inset-block-start: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background:
+    var(--grain-soft),
+    radial-gradient(ellipse 34% 52% at 90% 84%, rgb(135 57 42 / 18%), transparent 76%),
+    var(--canvas);
+  background-repeat: repeat, no-repeat;
+  background-size: 160px 160px, auto;
+}
+
+.header {
+  padding: clamp(90px, 12vw, 180px) clamp(23px, 6vw, 96px) clamp(55px, 8vw, 110px);
+  border-top: 1px solid rgb(248 248 248 / 11%);
+}
+
+.header > div {
+  max-width: 960px;
+}
+
+.header p {
+  margin-bottom: 13px;
+  font-size: var(--size-eyebrow);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  color: rgb(248 248 248 / 46%);
+  text-transform: uppercase;
+}
+
+.header h2 {
+  font-size: clamp(2rem, 4vw, 4.8rem);
+  font-weight: var(--weight-name-rest);
+  font-variation-settings: "wght" 280;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.counter {
+  position: absolute;
+  top: clamp(22px, 3vw, 42px);
+  right: clamp(23px, 4vw, 70px);
+  z-index: 5;
+  display: flex;
+  margin: 0;
+  align-items: baseline;
+  gap: 7px;
+  font-size: clamp(1.2rem, 2.4vw, 2.4rem);
+  color: var(--text-primary);
+  letter-spacing: -0.05em;
+}
+
+.counter span:not(:first-child) {
+  font-size: 0.45em;
+  color: rgb(248 248 248 / 40%);
+}
+
+.rail {
+  display: flex;
+  width: max-content;
+  height: 100svh;
+  padding: 4svh 6.5vw 3svh;
+  align-items: center;
+  gap: clamp(88px, 7vw, 135px);
+  will-change: transform;
+}
+
+.slide {
+  position: relative;
+  display: grid;
+  width: min(72vw, 1320px);
+  height: 91svh;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  flex: 0 0 auto;
+}
+
+.slide.portrait {
+  width: min(43vw, 720px);
+}
+
+.imageFrame {
+  display: grid;
+  min-height: 0;
+  height: 78svh;
+  place-items: center;
+}
+
+.imageFrame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  overflow: hidden;
+  border: 1px solid rgb(248 248 248 / 17%);
+  border-radius: clamp(18px, 2vw, 28px);
+  background: #080610;
+}
+
+.slide figcaption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  padding-top: 15px;
+}
+
+.slide figcaption > span {
+  color: var(--rust);
+  font-size: 0.75rem;
+  font-weight: var(--weight-semibold);
+}
+
+.slide strong {
+  display: block;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  font-weight: var(--weight-semibold);
+}
+
+.slide figcaption p {
+  max-width: 66ch;
+  margin-top: 4px;
+  font-size: clamp(0.68rem, 0.82vw, 0.8rem);
+  line-height: 1.45;
+  color: rgb(248 248 248 / 52%);
+}
+
+.slideArrow {
+  position: absolute;
+  top: calc(50% - 38px);
+  right: clamp(-108px, -5.8vw, -78px);
+  z-index: 6;
+  display: grid;
+  width: 64px;
+  height: 56px;
+  place-items: center;
+  color: var(--text-primary);
+  font-size: clamp(2rem, 2.7vw, 3rem);
+  font-weight: 300;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgb(0 0 0 / 60%));
+}
+
+@media (max-width: 760px) {
+  .track {
+    height: auto;
+  }
+
+  .stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    padding-bottom: 90px;
+  }
+
+  .header {
+    padding-top: 76px;
+    padding-bottom: 42px;
+  }
+
+  .header h2 {
+    font-size: clamp(2.1rem, 10.5vw, 3.4rem);
+  }
+
+  .counter {
+    display: none !important;
+  }
+
+  .rail {
+    display: grid;
+    width: auto;
+    height: auto;
+    padding: 0 23px;
+    gap: 46px;
+    transform: none !important;
+  }
+
+  .slideArrow {
+    display: none;
+  }
+
+  .slide,
+  .slide.portrait {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+  }
+
+  .imageFrame {
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .imageFrame img {
+    border-radius: 18px;
+  }
+
+  .slide.portrait .imageFrame {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (min-width: 761px) {
+  .track {
+    height: auto;
+  }
+
+  .stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    padding-bottom: 100px;
+  }
+
+  .rail {
+    display: grid;
+    width: auto;
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0 clamp(23px, 6vw, 96px);
+    transform: none !important;
+  }
+
+  .slide,
+  .slide.portrait {
+    width: 100%;
+    height: auto;
+    min-height: 420px;
+  }
+}

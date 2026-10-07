@@ -6,7 +6,7 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import styles from "./RotatingTitle.module.css";
 
 /** Nex's real title. Not invented; see docs/HANDOFF.md section 2. */
-const LEAD = "Machine Learning";
+const LEAD = "AI/ML";
 const ROLES = ["Engineer", "Architect"] as const;
 
 /** What the rotation stands in for, and what reduced motion shows instead. */
