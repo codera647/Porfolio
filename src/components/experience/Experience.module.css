@@ -17,6 +17,10 @@
   width: 100%;
   height: 100vh;
   height: 100svh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  row-gap: clamp(18px, 3svh, 32px);
+  padding-bottom: clamp(24px, 4svh, 46px);
   overflow: hidden;
   isolation: isolate;
   background:
@@ -78,14 +82,20 @@
   color: rgb(248 248 248 / 42%);
 }
 
+.railViewport {
+  position: relative;
+  min-height: 0;
+}
+
 .rail {
   position: absolute;
   z-index: 2;
-  top: clamp(180px, 26svh, 270px);
+  top: 0;
   left: 0;
   display: flex;
   gap: clamp(22px, 2.3vw, 42px);
   width: max-content;
+  height: 100%;
   align-items: center;
   padding-right: 22vw;
   padding-left: 22vw;
@@ -100,7 +110,8 @@
   position: relative;
   display: flex;
   width: clamp(650px, 58vw, 960px);
-  height: clamp(410px, 57svh, 540px);
+  height: min(100%, clamp(410px, 57svh, 540px));
+  flex-shrink: 0;
   min-width: 0;
   overflow: hidden;
   isolation: isolate;
@@ -164,7 +175,7 @@
   display: flex;
   width: 100%;
   min-width: 0;
-  padding: clamp(28px, 3.3vw, 52px);
+  padding: clamp(20px, min(3.3vw, 4.8svh), 52px);
   flex-direction: column;
 }
 
@@ -211,7 +222,7 @@
 .role {
   max-width: 82%;
   margin-top: clamp(20px, 3svh, 34px);
-  font-size: clamp(1.9rem, 3.35vw, 3.65rem);
+  font-size: clamp(1.6rem, min(3.35vw, 6svh), 3.65rem);
   font-weight: var(--weight-medium);
   line-height: 1.02;
   letter-spacing: -0.055em;
@@ -221,7 +232,7 @@
 .description {
   max-width: 720px;
   margin-top: clamp(15px, 2.2svh, 24px);
-  font-size: clamp(0.78rem, 1.05vw, 1rem);
+  font-size: clamp(0.72rem, min(1.05vw, 2.3svh), 1rem);
   line-height: 1.58;
   color: rgb(248 248 248 / 76%);
 }
@@ -273,10 +284,8 @@
 }
 
 .progress {
-  position: absolute;
-  right: clamp(32px, 6vw, 96px);
-  bottom: clamp(24px, 4svh, 46px);
-  left: clamp(32px, 6vw, 96px);
+  position: relative;
+  margin: 0 clamp(32px, 6vw, 96px);
   z-index: 4;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -329,10 +338,6 @@
 }
 
 @media (max-width: 960px) {
-  .rail {
-    top: clamp(175px, 27svh, 240px);
-  }
-
   .experienceCard {
     width: 66vw;
   }
@@ -369,7 +374,6 @@
   }
 
   .rail {
-    top: clamp(155px, 23svh, 205px);
     gap: 0;
     padding-right: 8vw;
     padding-left: 8vw;
@@ -379,8 +383,7 @@
     --inactive-scale: 0.9;
 
     width: 84vw;
-    height: min(58svh, 480px);
-    min-height: 410px;
+    height: min(100%, 480px);
   }
 
   .cardContent {
@@ -443,9 +446,7 @@
   }
 
   .progress {
-    right: 23px;
-    bottom: max(20px, 3svh);
-    left: 23px;
+    margin: 0 23px;
     gap: 6px;
   }
 
@@ -458,15 +459,6 @@
   .header {
     padding-top: 24px;
     gap: 12px;
-  }
-
-  .rail {
-    top: 142px;
-  }
-
-  .experienceCard {
-    height: calc(100svh - 202px);
-    min-height: 390px;
   }
 
   .description {
@@ -485,6 +477,7 @@
   }
 
   .stage {
+    display: block;
     position: relative;
     height: auto;
     min-height: 100svh;
@@ -502,6 +495,7 @@
     left: auto;
     display: grid;
     width: auto;
+    height: auto;
     padding: 0 clamp(23px, 6vw, 96px);
     gap: 16px;
     transform: none !important;

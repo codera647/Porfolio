@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Experience.module.css";
 
 const EXPERIENCE_FOLLOW_THROUGH_MS = 270;
@@ -87,10 +88,6 @@ export function Experience() {
 
     if (!track || !rail || reducedMotion.matches) return;
 
-    let frame: number | null = null;
-    let targetProgress = 0;
-    let currentProgress = 0;
-    let previousFrameTime = performance.now();
     let viewportCenter = window.innerWidth / 2;
     let cardCenters: number[] = [];
 
@@ -99,12 +96,6 @@ export function Experience() {
       cardCenters = cards.map((card) =>
         card ? card.offsetLeft + card.offsetWidth / 2 : viewportCenter,
       );
-    };
-
-    const measurePageProgress = () => {
-      const rect = track.getBoundingClientRect();
-      const distance = rect.height - window.innerHeight;
-      return distance <= 0 ? 0 : clamp(-rect.top / distance);
     };
 
     const getCardPosition = (pageProgress: number) => {
@@ -158,48 +149,14 @@ export function Experience() {
       );
     };
 
-    const tick = (time: number) => {
-      const elapsed = Math.min(64, time - previousFrameTime);
-      previousFrameTime = time;
-      const damping = 1 - Math.exp(-elapsed / EXPERIENCE_FOLLOW_THROUGH_MS);
-      currentProgress += (targetProgress - currentProgress) * damping;
-
-      if (Math.abs(targetProgress - currentProgress) < 0.0004) {
-        currentProgress = targetProgress;
-      }
-
-      render(currentProgress);
-      frame = currentProgress === targetProgress ? null : requestAnimationFrame(tick);
-    };
-
-    const requestRender = () => {
-      targetProgress = measurePageProgress();
-      if (frame === null) {
-        previousFrameTime = performance.now();
-        frame = requestAnimationFrame(tick);
-      }
-    };
-
-    const onResize = () => {
-      measure();
-      targetProgress = measurePageProgress();
-      currentProgress = targetProgress;
-      render(currentProgress);
-    };
-
-    measure();
-    targetProgress = measurePageProgress();
-    currentProgress = targetProgress;
-    render(currentProgress);
-
-    window.addEventListener("scroll", requestRender, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
-
-    return () => {
-      if (frame !== null) cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", requestRender);
-      window.removeEventListener("resize", onResize);
-    };
+    return animatePinnedScene(track, render, {
+      checkpoints: [0, 0.2775, 0.5, 0.7225, 1],
+      minimumTravelMs: 6400,
+      followThroughMs: EXPERIENCE_FOLLOW_THROUGH_MS,
+      lookAhead: 0.08,
+      holdMs: 400,
+      measure,
+    });
   }, []);
 
   return (
@@ -221,6 +178,7 @@ export function Experience() {
             </p>
           </header>
 
+          <div className={styles.railViewport}>
           <div
             ref={railRef}
             className={styles.rail}
@@ -268,6 +226,7 @@ export function Experience() {
                 </div>
               </article>
             ))}
+          </div>
           </div>
 
           <div className={styles.progress} aria-hidden="true">

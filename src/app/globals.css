@@ -15,7 +15,8 @@ html {
   /* The hero owns the first viewport; short screens scroll rather than crop
      their controls (s5.5). No scroll hijacking anywhere (s5.12). */
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  /* Lenis owns smooth in-page scrolling. Native route resets must be instant. */
+  scroll-behavior: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { TECH_ICONS } from "@/vendor/simple-icons/techIcons";
+import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Shipping.module.css";
 
 const SHIPPING_FOLLOW_THROUGH_MS = 285;
@@ -110,10 +111,6 @@ export function Shipping() {
       return;
     }
 
-    let frame: number | null = null;
-    let targetProgress = 0;
-    let currentProgress = 0;
-    let previousFrameTime = performance.now();
     let cardTravel = window.innerHeight;
     const transitionCount = SERVICES.length - 1;
 
@@ -163,51 +160,13 @@ export function Shipping() {
       });
     };
 
-    const measureProgress = () => {
-      const rect = track.getBoundingClientRect();
-      const distance = rect.height - window.innerHeight;
-      if (distance <= 0) return 0;
-      return Math.min(1, Math.max(0, -rect.top / distance));
-    };
-
-    const tick = (time: number) => {
-      const elapsed = Math.min(64, time - previousFrameTime);
-      previousFrameTime = time;
-      // Time-based damping keeps the same feel on 60 Hz and high-refresh
-      // displays and gently catches up after larger wheel/trackpad deltas.
-      const damping = 1 - Math.exp(-elapsed / SHIPPING_FOLLOW_THROUGH_MS);
-      currentProgress += (targetProgress - currentProgress) * damping;
-      if (Math.abs(targetProgress - currentProgress) < 0.0005) {
-        currentProgress = targetProgress;
-      }
-      render(currentProgress);
-      frame = currentProgress === targetProgress ? null : requestAnimationFrame(tick);
-    };
-
-    const onScroll = () => {
-      targetProgress = measureProgress();
-      if (frame === null) {
-        previousFrameTime = performance.now();
-        frame = requestAnimationFrame(tick);
-      }
-    };
-
-    measureCardTravel();
-    targetProgress = measureProgress();
-    currentProgress = targetProgress;
-    render(currentProgress);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    const onResize = () => {
-      measureCardTravel();
-      onScroll();
-    };
-    window.addEventListener("resize", onResize, { passive: true });
-
-    return () => {
-      if (frame !== null) cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
+    return animatePinnedScene(track, render, {
+      checkpoints: [0, 1 / 3, 2 / 3, 1],
+      minimumTravelMs: 5200,
+      followThroughMs: SHIPPING_FOLLOW_THROUGH_MS,
+      lookAhead: 0.1,
+      measure: measureCardTravel,
+    });
   }, []);
 
   return (

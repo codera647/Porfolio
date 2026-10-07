@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Philosophy.module.css";
 
 // A short, time-based follow-through keeps the image from reacting instantly
@@ -45,11 +46,6 @@ export function Philosophy() {
     ).matches;
 
     if (prefersReduced) return;
-
-    let rafId: number | null = null;
-    let targetProgress = 0;
-    let currentProgress = 0;
-    let previousFrameTime = performance.now();
 
     const updateDimensions = () => {
       const w = window.innerWidth;
@@ -130,56 +126,14 @@ export function Philosophy() {
       }
     };
 
-    const computeProgress = () => {
-      const rect = track.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const totalDistance = rect.height - viewportHeight;
-      if (totalDistance <= 0) return 0;
-      const scrolled = -rect.top;
-      return Math.min(1, Math.max(0, scrolled / totalDistance));
-    };
-
-    const tick = (time: number) => {
-      const elapsed = Math.min(64, time - previousFrameTime);
-      previousFrameTime = time;
-      const damping = 1 - Math.exp(
-        -elapsed / PHILOSOPHY_FOLLOW_THROUGH_MS,
-      );
-      currentProgress += (targetProgress - currentProgress) * damping;
-      if (Math.abs(targetProgress - currentProgress) < 0.0005) {
-        currentProgress = targetProgress;
-      }
-
-      render(currentProgress);
-
-      if (currentProgress !== targetProgress) {
-        rafId = requestAnimationFrame(tick);
-      } else {
-        rafId = null;
-      }
-    };
-
-    const handleScroll = () => {
-      targetProgress = computeProgress();
-      if (rafId === null) {
-        previousFrameTime = performance.now();
-        rafId = requestAnimationFrame(tick);
-      }
-    };
-
-    // Initial render
-    targetProgress = computeProgress();
-    currentProgress = targetProgress;
-    render(currentProgress);
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize, { passive: true });
-
-    return () => {
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-    };
+    return animatePinnedScene(track, render, {
+      checkpoints: [0, 1],
+      minimumTravelMs: 2600,
+      followThroughMs: PHILOSOPHY_FOLLOW_THROUGH_MS,
+      lookAhead: 0.16,
+      holdMs: 650,
+      measure: handleResize,
+    });
   }, []);
 
   return (
