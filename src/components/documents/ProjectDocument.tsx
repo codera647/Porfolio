@@ -28,12 +28,12 @@ function Block({ block }: { block: DocumentBlock }) {
     case "heading": return <h3 className={styles.subheading} data-doc-reveal>{block.text}</h3>;
     case "list": return <ul className={styles.list} data-doc-reveal>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>;
     case "note": return <aside className={styles.note} data-doc-reveal><p className={styles.noteLabel}>{block.label}</p><p>{block.text}</p></aside>;
-    case "table": return <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={`${block.columns.join(", ")} table`} data-lenis-prevent>
+    case "table": return <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={`${block.columns.join(", ")} table`} data-lenis-prevent-horizontal>
       <table><thead><tr>{block.columns.map((column) => <th key={column} scope="col">{column}</th>)}</tr></thead>
         <tbody>{block.rows.map((row, index) => <tr key={index}>{row.map((cell, cellIndex) => cellIndex === 0 ? <th key={cellIndex} scope="row">{cell}</th> : <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody>
       </table>
     </div>;
-    case "code": return <figure className={styles.code}><figcaption>{block.label}</figcaption><pre tabIndex={0} data-lenis-prevent><code>{block.text}</code></pre></figure>;
+    case "code": return <figure className={styles.code}><figcaption>{block.label}</figcaption><pre tabIndex={0} data-lenis-prevent-horizontal><code>{block.text}</code></pre></figure>;
     case "diagram": return <DocumentFigure id={block.id} />;
     case "image": return <figure className={styles.imageFigure}>
       <Image src={block.src} alt={block.alt} width={block.width} height={block.height} sizes="(max-width: 900px) 92vw, 900px" loading="lazy" className={styles.image} />
@@ -60,9 +60,9 @@ export default function ProjectDocument({ document }: { document: Document }) {
         <Contents document={document} />
         <a className={styles.sidebarDownload} href={pdf} download={`${document.name}-technical-description.pdf`}><DownloadIcon /> Take the study offline</a>
       </aside>
-      <details className={styles.mobileContents} data-lenis-prevent>
+      <details className={styles.mobileContents}>
         <summary>Contents <span>12 chapters + figures</span></summary>
-        <div><Contents document={document} /></div>
+        <div data-lenis-prevent><Contents document={document} /></div>
       </details>
 
       <article id="document-body" className={styles.article} aria-label={`${document.name} technical description`}>

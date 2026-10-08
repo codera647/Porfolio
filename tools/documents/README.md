@@ -17,6 +17,12 @@ Only its editorial structure is used, not its article text or illustrations.
 4. Run `npm.cmd run docs:check -- http://localhost:3200`.
 5. Run `python tools/documents/inspect_pdfs.py` and review all rendered pages.
 
+For scroll regressions, run `node tools/documents/check-document-scroll.mjs`.
+It sends real wheel events over text, figures, tables, images, and code, checks
+multi-frame vertical easing without snap-back, and checks sideways table scrolling.
+Horizontal content uses `data-lenis-prevent-horizontal`, not the all-axis marker:
+vertical gestures must remain with the page's smooth-scroll controller.
+
 The exporter uses an isolated headless Chrome/Edge installation and print CSS.
 It creates tagged, selectable-text PDFs in `output/pdf`, then copies them to
 `public/projects/<slug>/description.pdf` for direct browser downloads. These are

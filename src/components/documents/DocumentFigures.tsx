@@ -56,5 +56,7 @@ const figures = {
 
 export function DocumentFigure({ id }: { id: DiagramId }) {
   const Figure = figures[id];
-  return <div className={styles.diagram} data-doc-figure={id} data-lenis-prevent><Figure /></div>;
+  // Only sideways gestures belong to the figure; vertical gestures must keep
+  // the page's easing rather than switching to native scroll under the cursor.
+  return <div className={styles.diagram} data-doc-figure={id} data-lenis-prevent-horizontal><Figure /></div>;
 }
