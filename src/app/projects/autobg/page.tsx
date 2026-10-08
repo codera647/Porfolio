@@ -170,8 +170,8 @@ export default function AutobgCaseStudy() {
       </section>
 
       <footer className={styles.footer}>
-        <p>Next project / Brand-aware content creation</p>
-        <Link href="/projects/contentforge">Explore ContentForge AI <span aria-hidden="true">↗</span></Link>
+        <p>Next project / Custom agent harness</p>
+        <Link href="/projects/trailforge">Explore Trailforge <span aria-hidden="true">↗</span></Link>
         <Link href="/#projects">← Back to selected work</Link>
       </footer>
     </main>

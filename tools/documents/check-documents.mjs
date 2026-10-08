@@ -10,7 +10,7 @@ try {
     const { data } = await browser.send("Page.captureScreenshot", { format: "png" });
     await writeFile(`tmp/pdfs/web/${name}.png`, Buffer.from(data, "base64"));
   };
-  for (const slug of ["synapse", "autobg", "contentforge"]) {
+  for (const slug of ["synapse", "autobg", "contentforge", "trailforge"]) {
     const html = await (await fetch(`${base}/projects/${slug}/description`)).text();
     assert(html.includes('data-doc-section'), "Article must be server-rendered, not depend on JavaScript for its text");
     assert(!/Source basis|Source snapshot|b79bb2dd2794|68252421347e/i.test(html), "Source-basis notes must not appear on the reading page");
@@ -23,7 +23,7 @@ try {
     assert(await browser.evaluate("scrollY <= 1"), "Document must open at top");
     assert(await browser.evaluate("document.documentElement.scrollWidth<=innerWidth+1"), "Desktop article overflows");
     await shot(`${slug}-desktop`);
-    const targetChapter = slug === "contentforge" ? "limits" : slug === "autobg" ? "runtime" : "evaluation";
+    const targetChapter = slug === "trailforge" ? "verification" : slug === "contentforge" ? "limits" : slug === "autobg" ? "runtime" : "evaluation";
     await browser.evaluate(`document.querySelector('[data-desktop-toc] a[href="#${targetChapter}"]').click()`);
     await browser.waitFor(`document.querySelectorAll('[data-doc-toc] a[aria-current="location"][href="#${targetChapter}"]').length===2`);
     await sleep(700);

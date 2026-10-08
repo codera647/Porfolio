@@ -24,7 +24,7 @@ try {
       videos: [...projects.querySelectorAll('video')].map(video => ({ loop: video.loop, muted: video.muted, controls: video.controls })),
     };
   })()`);
-  assert.deepEqual(content.titles, ["Diffwise", "ContentForge AI", "Synapse", "AutoBG"]);
+  assert.deepEqual(content.titles, ["Diffwise", "Trailforge", "ContentForge AI", "Synapse", "AutoBG"]);
   assert(content.beforeExperience && content.locked && content.indices === 0);
   assert(content.videos.length === 3 && content.videos.every(video => video.loop && video.muted && !video.controls));
 

@@ -90,7 +90,7 @@ try {
   await shot('document-mobile');
   const pdf = await fetch(`${base}/projects/contentforge/description.pdf`);
   assert(pdf.ok && pdf.headers.get('content-type')?.includes('application/pdf') && (await pdf.arrayBuffer()).byteLength>10000, "Technical study download must be a real PDF");
-  await browser.send("Page.navigate", { url: `${base}/projects/autobg` });
+  await browser.send("Page.navigate", { url: `${base}/projects/trailforge` });
   await browser.waitFor("document.querySelector('footer a[href=\"/projects/contentforge\"]')");
   await browser.evaluate("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");
   await sleep(300);

@@ -7,7 +7,9 @@ export type DiagramId =
   | "autobg-reflection" | "autobg-background" | "autobg-plate"
   | "autobg-relight" | "autobg-runtime"
   | "contentforge-architecture" | "contentforge-generation"
-  | "contentforge-workflow" | "contentforge-data";
+  | "contentforge-workflow" | "contentforge-data"
+  | "trailforge-architecture" | "trailforge-runtime" | "trailforge-develop"
+  | "trailforge-publication" | "trailforge-evidence";
 
 export type DocumentBlock =
   | { type: "paragraph"; text: string }
@@ -28,12 +30,14 @@ export type DocumentSection = {
 };
 
 export type ProjectDocument = {
-  slug: "synapse" | "autobg" | "contentforge";
+  slug: "synapse" | "autobg" | "contentforge" | "trailforge";
   name: string;
   title: string;
   subtitle: string;
   abstract: string;
   tags: string[];
+  pdfFilename?: string;
+  pdfDescription?: string;
   sections: DocumentSection[];
 };
 

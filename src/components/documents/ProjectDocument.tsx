@@ -44,13 +44,14 @@ function Block({ block }: { block: DocumentBlock }) {
 
 export default function ProjectDocument({ document }: { document: Document }) {
   const pdf = `/projects/${document.slug}/description.pdf`;
+  const pdfFilename = document.pdfFilename ?? `${document.name}-technical-description.pdf`;
   return <main className={styles.page} data-project-document={document.slug}>
     <DocumentEnhancements documentId={document.slug} />
     <a href="#document-body" className={styles.skipLink}>Skip to document</a>
     <header className={styles.topbar}>
       <Link href={`/projects/${document.slug}`} className={styles.back}>&larr; <span>{document.name}</span></Link>
       <span className={styles.topbarLabel}>Abdul Moiz / Engineering studies</span>
-      <a className={styles.download} href={pdf} download={`${document.name}-technical-description.pdf`}><DownloadIcon /> Download PDF</a>
+      <a className={styles.download} href={pdf} download={pdfFilename}><DownloadIcon /> Download PDF</a>
       <div className={styles.readingProgress} data-reading-progress role="progressbar" aria-label="Reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0} />
     </header>
 
@@ -58,7 +59,7 @@ export default function ProjectDocument({ document }: { document: Document }) {
       <aside className={styles.sidebar} data-desktop-toc data-lenis-prevent>
         <p className={styles.sidebarLabel}>{document.name} / Technical study</p>
         <Contents document={document} />
-        <a className={styles.sidebarDownload} href={pdf} download={`${document.name}-technical-description.pdf`}><DownloadIcon /> Take the study offline</a>
+        <a className={styles.sidebarDownload} href={pdf} download={pdfFilename}><DownloadIcon /> {document.pdfDescription ? "Download the full guide" : "Take the study offline"}</a>
       </aside>
       <details className={styles.mobileContents}>
         <summary>Contents <span>{document.sections.length} chapters + figures</span></summary>
@@ -74,7 +75,7 @@ export default function ProjectDocument({ document }: { document: Document }) {
           <ul className={styles.tags} aria-label="Study topics">{document.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
           <aside className={styles.introduction}>
             <p><strong>How to read this study.</strong> Start with the problem, follow the implementation through its boundaries, then examine the evidence and tradeoffs. The diagrams are system maps; the tables make configuration and responsibilities explicit.</p>
-            <p>Implemented behavior, reported results, and future hardening are kept separate. Use the contents to jump to a chapter, or read from top to bottom. The PDF includes the complete text, diagrams, tables, and figures.</p>
+            <p>Implemented behavior, reported results, and future hardening are kept separate. Use the contents to jump to a chapter, or read from top to bottom. {document.pdfDescription ?? "The PDF includes the complete text, diagrams, tables, and figures."}</p>
           </aside>
           <nav className={styles.printContents} aria-label="Printed document contents">
             <p>In this study</p>
@@ -90,7 +91,7 @@ export default function ProjectDocument({ document }: { document: Document }) {
 
         <footer className={styles.documentFooter}>
           <p>You&apos;ve reached the end of the study.</p>
-          <div><Link href={`/projects/${document.slug}`}>&larr; Back to {document.name}</Link><a className={styles.download} href={pdf} download={`${document.name}-technical-description.pdf`}><DownloadIcon /> Download the complete PDF</a></div>
+          <div><Link href={`/projects/${document.slug}`}>&larr; Back to {document.name}</Link><a className={styles.download} href={pdf} download={pdfFilename}><DownloadIcon /> Download the complete PDF</a></div>
         </footer>
       </article>
     </div>

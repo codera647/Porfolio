@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ProjectPreviewVideo from "./ProjectPreviewVideo";
+import TrailforgeThumbnail from "./TrailforgeThumbnail";
 import styles from "./Projects.module.css";
 
 export function Projects() {
@@ -52,6 +53,25 @@ export function Projects() {
             </ul>
           </div>
         </article>
+        <Link
+          href="/projects/trailforge"
+          className={styles.project}
+          aria-label="Open the Trailforge project case study"
+          data-project="trailforge"
+        >
+          <div className={styles.projectHeading}>
+            <div>
+              <p>Trailforge / Custom agent harness</p>
+              <h3>Bound the work. Preserve the trail. Keep authority with the host.</h3>
+            </div>
+            <span>View project ↗</span>
+          </div>
+          <div className={`${styles.media} ${styles.trailforgeMedia}`}><TrailforgeThumbnail /></div>
+          <div className={`${styles.projectMeta} ${styles.projectMetaWide}`}>
+            <div><h4>Trailforge</h4><p>Provider-independent agent execution with durable recovery</p></div>
+            <ul aria-label="Trailforge capabilities"><li>Agent harness</li><li>Evidence &amp; verification</li><li>Durable workflows</li></ul>
+          </div>
+        </Link>
         <Link
           href="/projects/contentforge"
           className={styles.project}

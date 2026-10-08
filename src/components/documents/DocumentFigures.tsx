@@ -10,6 +10,7 @@ import {
 import SynapseBenchmarkCharts from "@/components/projects/SynapseBenchmarkCharts";
 import { ContentforgeArchitectureDiagram, ContentforgeGenerationDiagram, ContentforgeWorkflowDiagram, ContentforgeDataDiagram } from "@/components/projects/ContentforgeDiagrams";
 import styles from "./ProjectDocument.module.css";
+import { TrailforgeArchitectureDiagram, TrailforgeRuntimeDiagram, TrailforgeDevelopDiagram, TrailforgePublicationDiagram, TrailforgeEvidenceDiagram } from "@/components/projects/TrailforgeDiagrams";
 
 function RuntimeChart() {
   const modes = [{ name: "Template", value: 0.7 }, { name: "AI reflection", value: 13 }, { name: "AI background", value: 18 }];
@@ -57,6 +58,11 @@ const figures = {
   "contentforge-generation": ContentforgeGenerationDiagram,
   "contentforge-workflow": ContentforgeWorkflowDiagram,
   "contentforge-data": ContentforgeDataDiagram,
+  "trailforge-architecture": TrailforgeArchitectureDiagram,
+  "trailforge-runtime": TrailforgeRuntimeDiagram,
+  "trailforge-develop": TrailforgeDevelopDiagram,
+  "trailforge-publication": TrailforgePublicationDiagram,
+  "trailforge-evidence": TrailforgeEvidenceDiagram,
 } satisfies Record<DiagramId, () => React.JSX.Element>;
 
 export function DocumentFigure({ id }: { id: DiagramId }) {

@@ -145,6 +145,8 @@
   display: none;
 }
 
+.trailforgeMedia::after { display: none; }
+
 .lockBadge {
   position: absolute;
   z-index: 2;
