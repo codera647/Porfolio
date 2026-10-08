@@ -13,6 +13,7 @@ try {
   for (const slug of ["synapse", "autobg"]) {
     const html = await (await fetch(`${base}/projects/${slug}/description`)).text();
     assert(html.includes('data-doc-section'), "Article must be server-rendered, not depend on JavaScript for its text");
+    assert(!/Source basis|Source snapshot|b79bb2dd2794|68252421347e/i.test(html), "Source-basis notes must not appear on the reading page");
     await browser.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
     await browser.send("Page.navigate", { url: `${base}/projects/${slug}/description` });
     await browser.waitFor(`document.querySelector('[data-project-document="${slug}"][data-enhanced]')`);

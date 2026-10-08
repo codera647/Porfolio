@@ -91,7 +91,6 @@ export default function ProjectDocument({ document }: { document: Document }) {
         <footer className={styles.documentFooter}>
           <p>You&apos;ve reached the end of the study.</p>
           <div><Link href={`/projects/${document.slug}`}>&larr; Back to {document.name}</Link><a className={styles.download} href={pdf} download={`${document.name}-technical-description.pdf`}><DownloadIcon /> Download the complete PDF</a></div>
-          <small>Source snapshot {document.sourceCommit.slice(0, 12)} / Figures and text share one document source.</small>
         </footer>
       </article>
     </div>

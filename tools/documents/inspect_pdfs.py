@@ -16,7 +16,7 @@ for slug in ("synapse", "autobg"):
     assert len(texts) >= 5, "Expected a complete long-form document"
     assert all(len(text.strip()) > 35 for text in texts), "Blank or near-blank PDF page"
     joined = " ".join(texts)
-    normalize = lambda text: re.sub(r"\s+", "", unicodedata.normalize("NFKC", text)).casefold()
+    normalize = lambda text: re.sub(r"\s+", "", unicodedata.normalize("NFKC", text).translate(str.maketrans({"\u2011": "-", "\u2013": "-", "\u2014": "-"}))).casefold()
     expected_text = json.loads((Path("tmp/pdfs") / f"{slug}-expected-text.json").read_text(encoding="utf-8"))
     assert len(expected_text["chapters"]) == 12
     for text in expected_text["chapters"] + expected_text["paragraphs"]:
@@ -25,6 +25,16 @@ for slug in ("synapse", "autobg"):
     for token in expected:
         assert token in joined, f"Missing content: {token}"
     doc = pymupdf.open(filename)
+    assert not re.search(r"Source basis|Source snapshot|b79bb2dd2794|68252421347e", joined, re.I), "Source basis leaked into PDF"
+    assert len(doc.get_toc()) == 12, "All chapters must have native PDF bookmarks"
+    assert len(doc[1].get_links()) >= 12, "Contents must link to every chapter"
+    assert "ReportLab" in doc.metadata.get("producer", ""), "Final document must be typeset, not a webpage printout"
+    figure_data = json.loads((Path("tmp/pdfs/typeset") / "figures.json").read_text(encoding="utf-8"))
+    for figure_id, figure in figure_data.items():
+        if not figure_id.startswith(slug) or figure["kind"] != "vector":
+            continue
+        for label in figure["nodes"]:
+            assert normalize(label) in normalize(joined), f"Missing vector diagram node: {label}"
     thumbnails = []
     for index, page in enumerate(doc):
         image = page.get_pixmap(matrix=pymupdf.Matrix(1.25, 1.25), alpha=False)

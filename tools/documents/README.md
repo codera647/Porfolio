@@ -23,14 +23,26 @@ multi-frame vertical easing without snap-back, and checks sideways table scrolli
 Horizontal content uses `data-lenis-prevent-horizontal`, not the all-axis marker:
 vertical gestures must remain with the page's smooth-scroll controller.
 
-The exporter uses an isolated headless Chrome/Edge installation and print CSS.
-It creates tagged, selectable-text PDFs in `output/pdf`, then copies them to
-`public/projects/<slug>/description.pdf` for direct browser downloads. These are
-static assets: production does not need Chrome, a PDF server, or extra npm modules.
-Regenerate both PDFs whenever content changes so downloads match the live studies.
+The exporter typesets the shared article data with ReportLab. It does **not**
+print or screenshot the reading page. A dedicated light-paper layout uses the
+portfolio's JetBrains Mono fonts, dark-grey text, and rust accents. It includes a
+cover, linked contents, PDF bookmarks, numbered figures/tables, repeating table
+headers, and running headers/page numbers. Notes and captions stay with their
+content. Images retain their aspect ratios and are rounded directly.
 
-Python visual QA needs `pymupdf`, `pypdf`, and `pillow`. QA renders and contact
+Chrome/Edge exports only the isolated architecture diagrams as vector PDFs;
+PyMuPDF places them into the typeset layout without rasterizing their text or
+lines. Benchmark/runtime graphs are native PDF drawings, using values extracted
+from the existing graph components. The final files are copied to
+`public/projects/<slug>/description.pdf` for direct downloads. Production needs
+none of these export dependencies. Regenerate after changing article content.
+
+Export needs Node 22.18+ (TypeScript stripping), Chrome/Edge, and Python with
+`reportlab`, `pymupdf`, and `pillow`. Fonts are bundled under `fonts/` with their
+OFL license. Python visual QA also needs `pypdf`. QA renders and contact
 sheets are ignored under `tmp/pdfs`; final PDFs are intentionally retained.
+Install the export/QA dependencies with
+`python -m pip install -r tools/documents/requirements.txt`.
 
 ## Evidence rules
 

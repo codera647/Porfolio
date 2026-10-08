@@ -31,7 +31,6 @@ export type ProjectDocument = {
   title: string;
   subtitle: string;
   abstract: string;
-  sourceCommit: string;
   tags: string[];
   sections: DocumentSection[];
 };
@@ -53,7 +52,6 @@ export const synapseDocument: ProjectDocument = {
   title: "Engineering answers you can trace.",
   subtitle: "A technical study of multi-agent document intelligence",
   abstract: "From a raw document to a cited answer: the architecture, retrieval decisions, GPU pipeline, visual artifacts, and evaluation behind a multi-tenant research workspace.",
-  sourceCommit: "b79bb2dd2794981971996096dace1200015204c9",
   tags: ["Agentic RAG", "Document AI", "GPU workers", "Evaluation"],
   sections: [
     { id: "intent", number: "01", part: "Part I / The problem", title: "Research software should show its work.", blocks: [
@@ -195,7 +193,6 @@ export const synapseDocument: ProjectDocument = {
     { id: "takeaways", number: "12", part: "Closing / Engineering judgment", title: "A system that exposes its assumptions.", blocks: [
       p("The useful engineering lesson is not that more agents make a better product. It is that each responsibility has an explicit place: perception produces structure, retrieval produces candidate evidence, reasoning identifies gaps, synthesis produces a narrative, and evaluation tests those claims independently."),
       list("Preserve structure before building search: tables and figures are evidence, not decoration.", "Bound autonomous work with runtime limits and observable stages.", "Separate retrieval success, citation correctness, and answer quality.", "Treat graphs and generated artifacts as derived views that still need provenance.", "Report uncertainty, degraded checks, and benchmark scope instead of turning a demo into an unqualified reliability claim."),
-      note("Source basis", "Prepared from the project README, reviewed backend modules, evaluation documentation, and supplied screenshots/benchmark snapshots. Backend source snapshot: b79bb2dd2794981971996096dace1200015204c9. This is a technical description of the implementation, not a fresh performance or security certification."),
     ] },
   ],
 };
@@ -206,7 +203,6 @@ export const autobgDocument: ProjectDocument = {
   title: "Change the setting. Keep the car.",
   subtitle: "A technical study of controlled automotive imaging",
   abstract: "High-resolution matting, deterministic studio compositing, and carefully bounded diffusion. How AutoBG turns everyday vehicle photographs into grounded studio scenes without asking a model to redraw the vehicle.",
-  sourceCommit: "68252421347e752e0f1e0c66cc12b624d55169d0",
   tags: ["Computer vision", "BiRefNet HR", "SDXL", "ControlNet"],
   sections: [
     { id: "intent", number: "01", part: "Part I / The problem", title: "Background removal is only the beginning.", blocks: [
@@ -328,7 +324,6 @@ export const autobgDocument: ProjectDocument = {
     { id: "takeaways", number: "12", part: "Closing / Engineering judgment", title: "The boundary is the feature.", blocks: [
       p("AutoBG's central choice is selective generation. Continuous matting protects the silhouette; deterministic compositing establishes placement and ground contact; diffusion is given a bounded region or an explicit reintegration path. The result is easier to reason about than a single unconstrained prompt to redraw the scene."),
       list("Fix foreground color contamination as well as alpha quality.", "Anchor reflections and shadows to the actual silhouette, not only its bounding box.", "Separate reusable scene preparation from online inference.", "Use explicit generation boundaries, reproducible settings, and source-cutout reintegration.", "Keep prototype behavior, README timings, experiments, and future hardening clearly distinguished."),
-      note("Source basis", "Prepared from the project README, reviewed backend modules, and the supplied demo. Backend source snapshot: 68252421347e752e0f1e0c66cc12b624d55169d0. Approximate runtime figures are README-reported values; no new GPU benchmark was run for this document."),
     ] },
   ],
 };
