@@ -110,12 +110,20 @@ export function Experience() {
     };
 
     const render = (progress: number) => {
-      fill.style.transform = `scaleY(${progress})`;
+      const nextIndex = checkpoints.findIndex((stop, index) => index > 0 && progress <= stop);
+      const nextStop = checkpoints[nextIndex] ?? 1;
+      const previousStop = checkpoints[nextIndex - 1] ?? 0;
+      // Draw to the next node first, then use the last 22% of that same scroll
+      // interval to reveal its entry. No extra timer or dead-scroll pause.
+      const lineProgress = nextIndex < 0 ? 1 : previousStop
+        + clamp((progress - previousStop) / Math.max(0.001, (nextStop - previousStop) * 0.78))
+        * (nextStop - previousStop);
+      fill.style.transform = `scaleY(${lineProgress})`;
       rowRefs.current.forEach((row, index) => {
         if (!row) return;
         const stop = checkpoints[index] ?? 1;
         const previous = checkpoints[index - 1] ?? 0;
-        // Reveal only in the final stretch approaching a node. Completed
+        // Reveal only after the line reaches the node. Completed
         // entries stay at full opacity; reverse scrolling retraces the line.
         const revealWindow = Math.max(0.001, (stop - previous) * 0.22);
         const reveal = index === 0 ? 1

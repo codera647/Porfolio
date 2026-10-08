@@ -75,3 +75,34 @@ assert.equal(window.scrollY, stoppedAt, "Queued input must not replay after scro
 dispose();
 assert.equal(boundPinnedScroll(0, 10000, time).guarded, false, "Scene cleanup must not leave a scroll trap");
 console.log("PASS: no backlog replay or stale scroll trap after cleanup.");
+
+// A natural-flow timeline has no sticky-stage travel. Its measured node bounds
+// must nevertheless guard and finish every (unevenly spaced) entry.
+window.scrollY = 0;
+const timelineTrack = {
+  isConnected: true,
+  dataset: {},
+  firstElementChild: { clientHeight: 1200 },
+  getBoundingClientRect: () => ({ top: 100 - window.scrollY, height: 1200 }),
+};
+const timelineStops = [0, 0.21, 0.48, 0.74, 1];
+const disposeTimeline = animatePinnedScene(timelineTrack, () => {}, {
+  checkpoints: timelineStops, minimumTravelMs: 1600,
+  followThroughMs: 85, lookAhead: 0.22, holdMs: 40,
+  getBounds: () => ({ start: 100, end: 1100 }),
+});
+input(10000);
+assert.equal(window.scrollY, 100, "Timeline must land at its first node");
+const timelineSettled = new Set();
+for (let tick = 0; tick < 1000 && window.scrollY <= 1100; tick++) {
+  input(10000);
+  advance();
+  if (timelineTrack.dataset.scenePhase === "holding") {
+    timelineSettled.add(Number(timelineTrack.dataset.sceneProgress).toFixed(2));
+  }
+}
+assert(window.scrollY > 1100, "Natural-flow timeline must release");
+assert(timelineStops.slice(1).every(stop => timelineSettled.has(stop.toFixed(2))));
+disposeTimeline();
+assert.equal(boundPinnedScroll(0, 10000, time).guarded, false);
+console.log("PASS: natural-flow node bounds complete every uneven checkpoint.");
