@@ -16,15 +16,6 @@ v1.mp4
 
 # next.js
 /.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
 # debug
 npm-debug.log*
 yarn-debug.log*

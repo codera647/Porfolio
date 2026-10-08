@@ -24,6 +24,7 @@ try {
     await browser.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 760 });
     await browser.send("Page.navigate", { url: `${base}/projects/contentforge` });
     await browser.waitFor("document.querySelector('h1')?.textContent==='ContentForge AI'");
+    await browser.waitFor("document.querySelector('[data-walkthrough-ready]')");
     await browser.evaluate("document.fonts.ready.then(()=>true)");
     await sleep(700);
     assert(await browser.evaluate("scrollY <= 1"), "Project page must open at the top");
@@ -47,6 +48,7 @@ try {
       for (const fraction of [0, 0.5, 1]) {
         await browser.evaluate(`window.scrollTo({top:${start + fraction * distance},behavior:'instant'})`);
         await sleep(1400);
+        if (fraction === 1) await browser.waitFor("document.querySelector('[class*=counter] span').textContent==='06'", 30000);
         positions.push(await browser.evaluate("(()=>{const rail=document.querySelector('[class*=rail]');const stage=rail.parentElement;const imgs=[...rail.querySelectorAll('img')];return {x:new DOMMatrix(getComputedStyle(rail).transform).m41,stageTop:stage.getBoundingClientRect().top,index:stage.querySelector('[class*=counter] span').textContent,loaded:imgs.every(i=>i.complete&&i.naturalWidth>0),fit:imgs.every(i=>getComputedStyle(i).objectFit==='contain'&&parseFloat(getComputedStyle(i).borderRadius)>0)}})()"));
         await shot(`gallery-${width}-${fraction}`);
       }
@@ -66,7 +68,7 @@ try {
   await browser.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
   await browser.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await browser.send("Page.navigate", { url: `${base}/projects/contentforge` });
-  await browser.waitFor("document.querySelector('[class*=rail]')");
+  await browser.waitFor("document.querySelector('[data-walkthrough-ready]')");
   assert(await browser.evaluate("getComputedStyle(document.querySelector('[class*=rail]')).display==='grid'"), "Reduced motion gallery should stay readable");
   await browser.send("Emulation.setEmulatedMedia", { features: [] });
   await browser.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });

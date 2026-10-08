@@ -63,6 +63,7 @@ export function SynapseWalkthrough({
     const mobile = window.matchMedia("(max-width: 760px)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (!track || !rail) return;
+    track.dataset.walkthroughReady = "";
     if (mobile.matches || reduced.matches) {
       rail.style.removeProperty("transform");
       if (counterRef.current) counterRef.current.textContent = "01";
