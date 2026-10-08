@@ -13,6 +13,13 @@ const shot = async name => {
 };
 
 try {
+  await browser.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+  await browser.send("Page.navigate", { url: `${base}/?intro=0` });
+  await browser.waitFor("document.querySelector('[data-project=contentforge] video')");
+  await browser.evaluate("document.querySelector('[data-project=contentforge]').scrollIntoView({behavior:'instant'})");
+  await browser.waitFor("document.querySelector('[data-project=contentforge] video').readyState>=2 && !document.querySelector('[data-project=contentforge] video').paused");
+  assert(await browser.evaluate("document.querySelector('[data-project=contentforge] video').currentSrc.endsWith('/contentforge/demo-1.mp4')"), "Thumbnail must use demo 1");
+  await shot('thumbnail');
   for (const [width, height] of [[1440, 1000], [1366, 768], [390, 844], [320, 740]]) {
     await browser.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 760 });
     await browser.send("Page.navigate", { url: `${base}/projects/contentforge` });
@@ -62,6 +69,13 @@ try {
   await browser.waitFor("document.querySelector('[class*=rail]')");
   assert(await browser.evaluate("getComputedStyle(document.querySelector('[class*=rail]')).display==='grid'"), "Reduced motion gallery should stay readable");
   await browser.send("Emulation.setEmulatedMedia", { features: [] });
+  await browser.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await sleep(300);
+  await browser.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+  await sleep(300);
+  await browser.evaluate("(()=>{const t=document.querySelector('[style*=walkthrough-distance]');window.scrollTo({top:scrollY+t.getBoundingClientRect().top+(t.offsetHeight-innerHeight)/2,behavior:'instant'})})()");
+  await browser.waitFor("new DOMMatrix(getComputedStyle(document.querySelector('[class*=rail]')).transform).m41 < -500");
+  assert(await browser.evaluate("getComputedStyle(document.querySelector('[class*=rail]')).display==='flex'"), "Pinned motion must resume after a mobile-to-desktop resize");
 
   await browser.send("Page.navigate", { url: `${base}/projects/contentforge/description` });
   await browser.waitFor("document.querySelector('[data-project-document=contentforge][data-enhanced]')");
@@ -74,6 +88,14 @@ try {
   await shot('document-mobile');
   const pdf = await fetch(`${base}/projects/contentforge/description.pdf`);
   assert(pdf.ok && pdf.headers.get('content-type')?.includes('application/pdf') && (await pdf.arrayBuffer()).byteLength>10000, "Technical study download must be a real PDF");
+  await browser.send("Page.navigate", { url: `${base}/projects/autobg` });
+  await browser.waitFor("document.querySelector('footer a[href=\"/projects/contentforge\"]')");
+  await browser.evaluate("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");
+  await sleep(300);
+  await browser.evaluate("document.querySelector('footer a[href=\"/projects/contentforge\"]').click()");
+  await browser.waitFor("document.querySelector('h1')?.textContent==='ContentForge AI'");
+  await sleep(400);
+  assert(await browser.evaluate("scrollY<=1"), "Next-project link must reset scrolling");
   assert.deepEqual(browser.errors, [], "Browser exceptions");
-  console.log(`PASS reduced motion, 12-chapter study, text reveals and PDF download. Screenshots: ${directory}`);
+  console.log(`PASS demo 1 thumbnail, reduced motion, 12-chapter study, text reveals, PDF download and next-project navigation. Screenshots: ${directory}`);
 } finally { browser.close(); }

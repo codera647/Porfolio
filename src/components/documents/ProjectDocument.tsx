@@ -74,7 +74,7 @@ export default function ProjectDocument({ document }: { document: Document }) {
           <ul className={styles.tags} aria-label="Study topics">{document.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
           <aside className={styles.introduction}>
             <p><strong>How to read this study.</strong> Start with the problem, follow the implementation through its boundaries, then examine the evidence and tradeoffs. The diagrams are system maps; the tables make configuration and responsibilities explicit.</p>
-            <p>Implemented behavior, reported results, and future hardening are kept separate. Use the contents to jump to a chapter, or read from top to bottom. The PDF includes the complete text, figures, and graphs.</p>
+            <p>Implemented behavior, reported results, and future hardening are kept separate. Use the contents to jump to a chapter, or read from top to bottom. The PDF includes the complete text, diagrams, tables, and figures.</p>
           </aside>
           <nav className={styles.printContents} aria-label="Printed document contents">
             <p>In this study</p>

@@ -72,7 +72,7 @@ export function Projects() {
               label="ContentForge AI product overview"
             />
           </div>
-          <div className={styles.projectMeta}>
+          <div className={`${styles.projectMeta} ${styles.projectMetaWide}`}>
             <div>
               <h4>ContentForge AI</h4>
               <p>Brand-aware generation, repurposing &amp; content planning</p>

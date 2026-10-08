@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import styles from "./SynapseWalkthrough.module.css";
 
 const SCREENS = [
@@ -46,13 +46,28 @@ export function SynapseWalkthrough({
   const trackRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
+  const [motionVersion, setMotionVersion] = useState(0);
+
+  // Reconfigure when a device rotates or its motion preference changes.
+  // The server-rendered markup remains identical in every mode.
+  useEffect(() => {
+    const queries = [window.matchMedia("(max-width: 760px)"), window.matchMedia("(prefers-reduced-motion: reduce)")];
+    const update = () => setMotionVersion(version => version + 1);
+    queries.forEach(query => query.addEventListener("change", update));
+    return () => queries.forEach(query => query.removeEventListener("change", update));
+  }, []);
 
   useEffect(() => {
     const track = trackRef.current;
     const rail = railRef.current;
     const mobile = window.matchMedia("(max-width: 760px)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!track || !rail || mobile.matches || reduced.matches) return;
+    if (!track || !rail) return;
+    if (mobile.matches || reduced.matches) {
+      rail.style.removeProperty("transform");
+      if (counterRef.current) counterRef.current.textContent = "01";
+      return;
+    }
 
     let target = 0;
     let current = 0;
@@ -113,10 +128,14 @@ export function SynapseWalkthrough({
       sizeObserver.disconnect();
       window.removeEventListener("resize", resize);
     };
-  }, [screens]);
+  }, [screens, motionVersion]);
 
   return (
-    <section className={styles.section} aria-labelledby="walkthrough-title" style={imageBackground ? { "--walkthrough-image-background": imageBackground } as CSSProperties : undefined}>
+    <section className={styles.section} aria-labelledby="walkthrough-title" style={imageBackground ? {
+      "--walkthrough-image-background": imageBackground,
+      "--walkthrough-counter-color": "#303030",
+      "--walkthrough-counter-muted": "rgb(48 48 48 / 55%)",
+    } as CSSProperties : undefined}>
       <header className={styles.header}>
         <div>
           <p>01 / Product walkthrough</p>

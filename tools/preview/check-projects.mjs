@@ -43,9 +43,15 @@ try {
         wordmarkInside: wordmark.left >= media.left && wordmark.right <= media.right && wordmark.top >= media.top && wordmark.bottom <= media.bottom,
         tagsInside: [...card.querySelectorAll('li')].every(tag => tag.getBoundingClientRect().right <= card.getBoundingClientRect().right + 1),
         grain: getComputedStyle(card.querySelector('[class*="lockedMedia"]')).backgroundImage.includes('data:image/svg'),
+        contentforgeMeta: (() => {
+          const project = document.querySelector('[data-project="contentforge"]');
+          const title = project.querySelector('h4').getBoundingClientRect();
+          const tags = project.querySelector('ul').getBoundingClientRect();
+          return title.right <= project.getBoundingClientRect().right + 1 && title.bottom <= tags.top;
+        })(),
       };
     })()`);
-    assert(!layout.overflow && layout.badgeInside && layout.wordmarkInside && layout.tagsInside && layout.grain, `Layout issue at ${width}: ${JSON.stringify(layout)}`);
+    assert(!layout.overflow && layout.badgeInside && layout.wordmarkInside && layout.tagsInside && layout.grain && layout.contentforgeMeta, `Layout issue at ${width}: ${JSON.stringify(layout)}`);
     const { data } = await browser.send("Page.captureScreenshot", { format: "png" });
     await writeFile(path.join(directory, `${width}x${height}.png`), Buffer.from(data, "base64"));
     console.log(`PASS ${width}x${height}: locked thumbnail, wordmark, badge, tags, grain and no overflow.`);

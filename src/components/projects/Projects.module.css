@@ -231,6 +231,15 @@
   color: rgb(248 248 248 / 74%);
 }
 
+.projectMeta.projectMetaWide {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.projectMetaWide ul {
+  justify-content: flex-start;
+}
+
 @media (max-width: 1100px) {
   .projectMeta {
     grid-template-columns: minmax(0, 1fr);
