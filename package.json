@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docs:pdf": "node tools/documents/export-pdfs.mjs",
+    "docs:check": "node tools/documents/check-documents.mjs"
   },
   "dependencies": {
     "lenis": "^1.3.26",

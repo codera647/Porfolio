@@ -65,6 +65,7 @@ export default function SynapseCaseStudy() {
               Open project demo <span aria-hidden="true">↗</span>
             </a>
             <a href="#system" className={styles.secondaryAction}>Explore the system ↓</a>
+            <Link href="/projects/synapse/description" className={styles.secondaryAction}>Read the technical study <span aria-hidden="true">↗</span></Link>
           </div>
         </div>
         <ul className={styles.heroTags} aria-label="Project areas">

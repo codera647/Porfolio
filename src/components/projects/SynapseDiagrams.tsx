@@ -9,7 +9,7 @@ type FlowNode = {
 
 export function Node({ title, detail, accent = false }: FlowNode) {
   return (
-    <div className={`${styles.node} ${accent ? styles.accent : ""}`}>
+    <div data-diagram-node className={`${styles.node} ${accent ? styles.accent : ""}`}>
       <strong>{title}</strong>
       <span>{detail}</span>
     </div>
@@ -26,9 +26,9 @@ export function Arrow({ down = false, label }: { down?: boolean; label?: string 
 
 export function FlowRow({ nodes }: { nodes: readonly FlowNode[] }) {
   return (
-    <div className={styles.flowRow}>
+    <div data-diagram-flow className={styles.flowRow}>
       {nodes.map((node, index) => (
-        <div className={styles.flowStep} key={node.title}>
+        <div data-diagram-step className={styles.flowStep} key={node.title}>
           <Node {...node} />
           {index < nodes.length - 1 && <Arrow />}
         </div>
@@ -52,12 +52,12 @@ export function Shell({
 }) {
   return (
     <figure className={styles.figure}>
-      <div className={styles.shell}>
-        <div className={styles.diagramTitle}>
+      <div data-diagram-shell className={styles.shell}>
+        <div data-diagram-title className={styles.diagramTitle}>
           <span>{title}</span>
           <span>{project} / System map</span>
         </div>
-        <div className={styles.columnLabels} style={{ "--columns": columns.length } as CSSProperties}>
+        <div data-diagram-columns className={styles.columnLabels} style={{ "--columns": columns.length } as CSSProperties}>
           {columns.map((column) => <span key={column}>{column}</span>)}
         </div>
         {children}

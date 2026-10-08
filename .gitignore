@@ -48,5 +48,9 @@ __pycache__/
 # Local preview screenshots
 .preview/
 
+# Regenerable document/PDF visual checks (not the downloadable PDF assets)
+/tmp/document-reference/
+/tmp/pdfs/
+
 # Pipeline inspection renders (regenerate with the scripts beside them)
 tools/signature/_*.png

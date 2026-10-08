@@ -54,6 +54,7 @@ export default function AutobgCaseStudy() {
           <div className={styles.heroActions}>
             <a href="#demo" className={styles.primaryAction}>See the demo <span aria-hidden="true">↓</span></a>
             <a href="#system" className={styles.secondaryAction}>Explore the system <span aria-hidden="true">↓</span></a>
+            <Link href="/projects/autobg/description" className={styles.secondaryAction}>Read the technical study <span aria-hidden="true">↗</span></Link>
           </div>
         </div>
         <ul className={styles.heroTags} aria-label="Project technologies">
