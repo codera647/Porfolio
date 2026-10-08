@@ -8,7 +8,7 @@
 .track {
   position: relative;
   width: 100%;
-  height: 680svh;
+  height: 460svh;
 }
 
 .stage {
@@ -355,7 +355,7 @@
 
 @media (max-width: 680px) {
   .track {
-    height: 610svh;
+    height: 420svh;
   }
 
   .header {

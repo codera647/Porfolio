@@ -8,7 +8,7 @@ import styles from "./Philosophy.module.css";
 // A short, time-based follow-through keeps the image from reacting instantly
 // to large wheel/trackpad deltas. Because it is measured in milliseconds, the
 // feel remains consistent across 60 Hz and high-refresh displays.
-const PHILOSOPHY_FOLLOW_THROUGH_MS = 280;
+const PHILOSOPHY_FOLLOW_THROUGH_MS = 180;
 
 /**
  * Philosophy Section with ScrollExpand cinematic animation.
@@ -16,7 +16,7 @@ const PHILOSOPHY_FOLLOW_THROUGH_MS = 280;
  * Recreates the exact experience from the reference video:
  * 1. Initial State: Centered compact square card, blurred crimson Michelangelo
  *    hands image (14px Gaussian blur, 1.4x zoom), with "THE PHILOSOPHY" title overlaid.
- * 2. Scroll Expansion: As the user scrolls through the 250vh track, the card smoothly
+ * 2. Scroll Expansion: As the user scrolls through the pinned track, the card smoothly
  *    expands using clip-path to 100% full viewport width and height.
  *    Simultaneously, the blur clears (14px -> 0px) and the zoom eases down (1.4x -> 1.0x).
  * 3. Title Transition: The large "THE PHILOSOPHY" header lifts up and fades away.
@@ -128,10 +128,10 @@ export function Philosophy() {
 
     return animatePinnedScene(track, render, {
       checkpoints: [0, 1],
-      minimumTravelMs: 2600,
+      minimumTravelMs: 1400,
       followThroughMs: PHILOSOPHY_FOLLOW_THROUGH_MS,
-      lookAhead: 0.16,
-      holdMs: 650,
+      lookAhead: 0.28,
+      holdMs: 120,
       measure: handleResize,
     });
   }, []);

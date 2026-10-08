@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Experience.module.css";
 
-const EXPERIENCE_FOLLOW_THROUGH_MS = 270;
+const EXPERIENCE_FOLLOW_THROUGH_MS = 180;
 
 const EXPERIENCES = [
   {
@@ -99,16 +99,16 @@ export function Experience() {
     };
 
     const getCardPosition = (pageProgress: number) => {
-      // Reserve a short entry and exit hold. Inside each transition segment,
-      // 18% is held at either end so every role has a settled reading window.
-      const journey = clamp((pageProgress - 0.055) / 0.89);
+      // Brief easing at either end, without a long dead-scroll entry/exit.
+      // The shared checkpoint guard already gives each role a settled state.
+      const journey = clamp(pageProgress);
       const transitionCount = EXPERIENCES.length - 1;
       const scaled = journey * transitionCount;
       const segment = Math.min(Math.floor(scaled), transitionCount - 1);
       const local = segment === transitionCount - 1 && journey === 1
         ? 1
         : scaled - segment;
-      const moving = smoothstep(clamp((local - 0.18) / 0.64));
+      const moving = smoothstep(clamp((local - 0.08) / 0.84));
       return segment + moving;
     };
 
@@ -150,11 +150,11 @@ export function Experience() {
     };
 
     return animatePinnedScene(track, render, {
-      checkpoints: [0, 0.2775, 0.5, 0.7225, 1],
-      minimumTravelMs: 6400,
+      checkpoints: [0, 0.25, 0.5, 0.75, 1],
+      minimumTravelMs: 3400,
       followThroughMs: EXPERIENCE_FOLLOW_THROUGH_MS,
-      lookAhead: 0.08,
-      holdMs: 400,
+      lookAhead: 0.16,
+      holdMs: 120,
       measure,
     });
   }, []);

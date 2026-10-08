@@ -5,7 +5,7 @@ import { TECH_ICONS } from "@/vendor/simple-icons/techIcons";
 import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Shipping.module.css";
 
-const SHIPPING_FOLLOW_THROUGH_MS = 285;
+const SHIPPING_FOLLOW_THROUGH_MS = 190;
 
 const TOOL_SLUGS = [
   "python",
@@ -162,9 +162,10 @@ export function Shipping() {
 
     return animatePinnedScene(track, render, {
       checkpoints: [0, 1 / 3, 2 / 3, 1],
-      minimumTravelMs: 5200,
+      minimumTravelMs: 2800,
       followThroughMs: SHIPPING_FOLLOW_THROUGH_MS,
-      lookAhead: 0.1,
+      lookAhead: 0.18,
+      holdMs: 120,
       measure: measureCardTravel,
     });
   }, []);

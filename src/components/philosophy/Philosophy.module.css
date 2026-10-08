@@ -16,7 +16,7 @@
 .track {
   position: relative;
   width: 100%;
-  height: 290vh;
+  height: 220vh;
 }
 
 /* ── Sticky Stage: holds the viewport while scrolling through the track ───── */
@@ -183,13 +183,13 @@
 
 @media (max-width: 1024px) {
   .track {
-    height: 260vh;
+    height: 205vh;
   }
 }
 
 @media (max-width: 600px) {
   .track {
-    height: 235vh;
+    height: 195vh;
   }
   .badge {
     margin-bottom: 16px;

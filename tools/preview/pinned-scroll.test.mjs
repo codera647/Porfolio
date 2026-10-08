@@ -23,8 +23,8 @@ const track = {
 };
 const painted = [];
 const dispose = animatePinnedScene(track, (progress) => painted.push(progress), {
-  checkpoints: [0, 1 / 3, 2 / 3, 1], minimumTravelMs: 4000,
-  followThroughMs: 280, lookAhead: 0.1, holdMs: 350,
+  checkpoints: [0, 1 / 3, 2 / 3, 1], minimumTravelMs: 2800,
+  followThroughMs: 190, lookAhead: 0.18, holdMs: 120,
 });
 const advance = () => {
   time += 20;
@@ -50,7 +50,8 @@ for (let tick = 0; tick < 1000 && window.scrollY <= 1400; tick++) {
 }
 assert(window.scrollY > 1400, "Forward scrolling must eventually release");
 assert(settled.has("0.333") && settled.has("0.667") && settled.has("1.000"), "Each checkpoint must settle");
-assert(painted.every((value, index) => !index || Math.abs(value - painted[index - 1]) <= 0.0051), "Progress exceeds its per-frame speed budget");
+assert(painted.every((value, index) => !index || Math.abs(value - painted[index - 1]) <= 20 / 2800 + 0.0005), "Progress exceeds its per-frame speed budget");
+assert(time < 9000, "Normal-paced input should not require a long completion delay");
 console.log("PASS: huge forward input completes every checkpoint before release.");
 
 // Reversal is available immediately, without waiting for a forward lock.

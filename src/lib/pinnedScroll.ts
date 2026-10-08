@@ -81,7 +81,8 @@ export function boundPinnedScroll(from: number, requested: number, now: number) 
     }
 
     const atEnd = direction > 0 ? scene.stopIndex === stops.length - 1 : scene.stopIndex === 0;
-    const holdMs = atEnd ? Math.max(600, scene.options.holdMs ?? 350) : (scene.options.holdMs ?? 350);
+    // Completion is still required, but do not add a long pause before release.
+    const holdMs = scene.options.holdMs ?? 120;
     if (scene.settledAt !== null && now - scene.settledAt >= holdMs) {
       if (atEnd) {
         scene.track.dataset.scenePhase = "complete";
