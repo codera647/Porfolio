@@ -55,7 +55,7 @@ export default function ContentforgeCaseStudy() {
       </div>
     </section>
 
-    <SynapseWalkthrough project="ContentForge AI" screens={contentforgeScreens} title="From a brand voice to a planned release." />
+    <SynapseWalkthrough project="ContentForge AI" screens={contentforgeScreens} title="From a brand voice to a planned release." imageBackground="#f6f4ef" />
 
     <section id="system" className={styles.system} aria-labelledby="contentforge-system">
       <header className={styles.sectionHeading}>

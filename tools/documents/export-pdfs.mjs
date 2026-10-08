@@ -37,6 +37,7 @@ const figureStyle = `
   #pdf-figure [data-diagram-node] strong { font-size:18px!important; line-height:1.3!important; }
   #pdf-figure [data-diagram-node] span { font-size:15px!important; line-height:1.4!important; color:#555!important; }
   #pdf-figure [data-diagram-flow] { display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:18px 8px!important; }
+  #pdf-figure [data-doc-figure="contentforge-workflow"] [data-diagram-flow] { grid-template-columns:repeat(4,minmax(0,1fr))!important; }
   #pdf-figure [class*="arrow"] { color:#87392a!important; font-size:30px!important; }
   #pdf-figure [class*="persisted"], #pdf-figure [class*="note"] {
     font-size:14px!important; border-color:#c8c3bc!important; background:#ece9e4!important; }

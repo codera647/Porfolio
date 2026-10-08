@@ -36,10 +36,12 @@ export function SynapseWalkthrough({
   screens = SCREENS,
   project = "Synapse",
   title = "One workspace, from source to cited answer.",
+  imageBackground,
 }: {
   screens?: readonly WalkthroughScreen[];
   project?: string;
   title?: string;
+  imageBackground?: string;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
@@ -114,7 +116,7 @@ export function SynapseWalkthrough({
   }, [screens]);
 
   return (
-    <section className={styles.section} aria-labelledby="walkthrough-title">
+    <section className={styles.section} aria-labelledby="walkthrough-title" style={imageBackground ? { "--walkthrough-image-background": imageBackground } as CSSProperties : undefined}>
       <header className={styles.header}>
         <div>
           <p>01 / Product walkthrough</p>

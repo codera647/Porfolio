@@ -109,7 +109,7 @@
   overflow: hidden;
   border: 1px solid rgb(248 248 248 / 17%);
   border-radius: clamp(18px, 2vw, 28px);
-  background: #080610;
+  background: var(--walkthrough-image-background, #080610);
 }
 
 .slide figcaption {
