@@ -1,4 +1,4 @@
-/** Shared animation/input clock for the three pinned homepage scenes. */
+/** Shared animation/input clock for the homepage scroll scenes. */
 type SceneOptions = {
   checkpoints: readonly number[];
   minimumTravelMs: number;
@@ -6,6 +6,8 @@ type SceneOptions = {
   lookAhead: number;
   holdMs?: number;
   measure?: () => void;
+  /** Natural-flow timelines use node positions instead of a sticky stage. */
+  getBounds?: () => { start: number; end: number };
 };
 
 type Scene = {
@@ -23,6 +25,10 @@ const EPSILON = 0.0005;
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
 function bounds(scene: Scene) {
+  if (scene.options.getBounds) {
+    const { start, end } = scene.options.getBounds();
+    return { start, end, distance: Math.max(1, end - start) };
+  }
   const rect = scene.track.getBoundingClientRect();
   const stage = scene.track.firstElementChild as HTMLElement | null;
   const start = window.scrollY + rect.top;

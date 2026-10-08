@@ -79,7 +79,12 @@ try {
           && track.dataset.scenePhase === 'complete'
           && Number(track.dataset.sceneProgress) >= 0.999
           && scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-        const released = passed || finishedAtPageEnd;
+        const lastNode = track.querySelector('ol[aria-label="Professional experience"] li:last-child [data-timeline-node]');
+        const timelineComplete = lastNode
+          && Number(track.dataset.sceneProgress) >= 0.999
+          && track.dataset.scenePhase === 'complete'
+          && lastNode.getBoundingClientRect().top <= innerHeight * 0.6 + 2;
+        const released = lastNode ? timelineComplete : (passed || finishedAtPageEnd);
         if (released && !completed.has(track)) {
           const progress = Number(track.dataset.sceneProgress);
           window.__sceneChecks.push({section:track.closest('section').id, progress, durationMs:Math.round(performance.now()-arrivals.get(track))});
@@ -96,10 +101,10 @@ try {
   while (Date.now() - started < 120000 && !await evaluate("window.__sceneDone")) {
     await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 500, y: 300, deltaX: 0, deltaY: 12000 });
     await sleep(70);
-    const sample = await evaluate(`({role:document.querySelector('#experience [aria-label="5 experience entries"] > span')?.textContent,
+    const sample = await evaluate(`({roles:[...document.querySelectorAll('#experience [data-reveal]')].flatMap((row,i)=>Number(row.dataset.reveal)>=0.999?[String(i+1).padStart(2,'0')]:[]),
       ship:[...document.querySelectorAll('#what-i-help-you-ship article')].map(c=>parseFloat(c.style.getPropertyValue('--card-y'))),
       active: [...document.querySelectorAll('[data-scroll-scene]')].find(t=>t.getBoundingClientRect().top<=1&&t.getBoundingClientRect().bottom>=innerHeight)?.closest('section').id})`);
-    if (sample.active === "experience") observedRoles.add(sample.role);
+    sample.roles.forEach(role => observedRoles.add(role));
     if (sample.active === "what-i-help-you-ship") sample.ship.forEach((y, index) => { if (Math.abs(y) < 1) observedShip.add(index + 1); });
   }
   const completions = await evaluate("window.__sceneChecks");
@@ -110,16 +115,16 @@ try {
   assert.deepEqual([...observedShip].sort(), [1, 2, 3, 4], "A shipping card was skipped");
   console.log("PASS rapid wheel input:", JSON.stringify(completions), "all 4 shipping cards and 5 roles observed.");
 
-  // Check all card contents, not just the active short title, across viewport sizes.
+  // Natural-flow entries must not clip, overlap, or cross the timeline spine.
   await sleep(2000); // Let the final unguarded Lenis wheel target finish first.
   for (const [width, height] of [[1366, 600], [1536, 650], [1920, 720], [1280, 800], [390, 640]]) {
     await viewport(width, height);
     await sleep(200);
-    await evaluate(`{ const t=document.querySelector('#experience [data-scroll-scene]');const rect=t.getBoundingClientRect();window.scrollTo({top:scrollY+rect.top+(rect.height-t.firstElementChild.clientHeight)*0.5,behavior:'instant'}); }`);
-    await waitFor(`(()=>{const t=document.querySelector('#experience [data-scroll-scene]');const r=t.getBoundingClientRect();return Math.abs(r.top+(r.height-t.firstElementChild.clientHeight)*0.5)<2 && Math.abs(Number(t.dataset.sceneProgress)-0.5)<0.001;})()`);
-    const layout = await evaluate(`(()=>{const s=document.querySelector('#experience');const progress=s.querySelector('[class*="progressSegment"]').getBoundingClientRect().top;return [...s.querySelectorAll('article')].map(c=>({role:c.querySelector('h3').textContent, gap:progress-c.getBoundingClientRect().bottom, overflow:c.querySelector('[class*="cardContent"]').scrollHeight-c.querySelector('[class*="cardContent"]').clientHeight}));})()`);
-    assert(layout.every((card) => card.gap > 10), `Progress overlaps a card at ${width} × ${height}: ${JSON.stringify(layout)}`);
-    assert(layout.every((card) => card.overflow <= 2), `Card text clips at ${width} × ${height}: ${JSON.stringify(layout)}`);
+    await evaluate(`{const nodes=[...document.querySelectorAll('#experience [data-timeline-node]')];const first=nodes[0].getBoundingClientRect();const last=nodes.at(-1).getBoundingClientRect();window.scrollTo({top:scrollY+(first.top+last.top)/2+first.height/2-innerHeight*0.6,behavior:'instant'});}`);
+    await waitFor(`Math.abs(Number(document.querySelector('#experience [data-scroll-scene]').dataset.sceneProgress)-0.5)<0.001`);
+    const layout = await evaluate(`(()=>{const rows=[...document.querySelectorAll('#experience [data-reveal]')];return rows.map((row,i)=>{const c=row.querySelector('article');const r=c.getBoundingClientRect();const n=row.querySelector('[data-timeline-node]').getBoundingClientRect();const next=rows[i+1]?.querySelector('article').getBoundingClientRect();return {role:c.querySelector('h4').textContent,gap:next?next.top-r.bottom:100,overflow:c.scrollHeight-c.clientHeight,spineClear:innerWidth<=680?r.left>n.right:i%2?r.left>n.right:r.right<n.left,tagsFit:[...c.querySelectorAll('li')].every(tag=>tag.getBoundingClientRect().right<=r.right+1)};});})()`);
+    assert(layout.every(entry => entry.gap > 10 && entry.spineClear && entry.tagsFit), `Timeline overlaps at ${width} x ${height}: ${JSON.stringify(layout)}`);
+    assert(layout.every(entry => entry.overflow <= 2), `Timeline text clips at ${width} x ${height}: ${JSON.stringify(layout)}`);
     await shot(`experience-${width}x${height}`);
     console.log(`PASS experience layout ${width} × ${height}:`, JSON.stringify(layout.map((card) => ({ role: card.role, gap: Math.round(card.gap) }))));
   }

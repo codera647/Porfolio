@@ -4,11 +4,10 @@ import { useEffect, useRef } from "react";
 import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Experience.module.css";
 
-const EXPERIENCE_FOLLOW_THROUGH_MS = 110;
-
 const EXPERIENCES = [
   {
     company: "kinetiq",
+    initials: "K",
     role: "AI/ML Team Lead",
     period: "Jul 2026 - Present",
     location: "Remote",
@@ -19,6 +18,7 @@ const EXPERIENCES = [
   },
   {
     company: "kinetiq",
+    initials: "K",
     role: "AI/ML Engineer",
     period: "Sep 2025 - Jun 2026",
     location: "Remote",
@@ -28,6 +28,7 @@ const EXPERIENCES = [
   },
   {
     company: "Digifloat",
+    initials: "D",
     role: "Artificial Intelligence Intern",
     period: "Apr 2026 - Jul 2026",
     location: "Hybrid",
@@ -37,6 +38,7 @@ const EXPERIENCES = [
   },
   {
     company: "Prosilient Systems Inc.",
+    initials: "PS",
     role: "AI Researcher",
     period: "Jul 2025 - Sep 2025",
     location: "Remote",
@@ -47,6 +49,7 @@ const EXPERIENCES = [
   {
     company: "CARE",
     companyLong: "Center for Advanced Research in Engineering",
+    initials: "C",
     role: "AI Developer",
     period: "Jul 2024 - Sep 2024",
     location: "On-site",
@@ -56,194 +59,148 @@ const EXPERIENCES = [
   },
 ] as const;
 
-const clamp = (value: number, minimum = 0, maximum = 1) =>
-  Math.min(maximum, Math.max(minimum, value));
-
+const clamp = (value: number) => Math.min(1, Math.max(0, value));
 const smoothstep = (value: number) => value * value * (3 - 2 * value);
 
-function formatIndex(index: number) {
-  return String(index + 1).padStart(2, "0");
-}
-
-/**
- * A pinned, scroll-driven experience rail. Vertical page progress becomes a
- * horizontal journey, while a shared focus value controls every visual cue so
- * the counter, card highlight, and progress rail cannot drift out of sync.
- */
+/** Alternating, natural-flow timeline; the line leads each entry's reveal. */
 export function Experience() {
   const trackRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<Array<HTMLElement | null>>([]);
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const segmentRefs = useRef<Array<HTMLSpanElement | null>>([]);
-  const edgeProgressRef = useRef<HTMLSpanElement>(null);
+  const timelineRef = useRef<HTMLOListElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLSpanElement>(null);
+  const rowRefs = useRef<Array<HTMLLIElement | null>>([]);
 
   useEffect(() => {
     const track = trackRef.current;
-    const rail = railRef.current;
-    const cards = cardRefs.current;
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
+    const timeline = timelineRef.current;
+    const line = lineRef.current;
+    const fill = fillRef.current;
+    if (!track || !timeline || !line || !fill) return;
 
-    if (!track || !rail || reducedMotion.matches) return;
-
-    let viewportCenter = window.innerWidth / 2;
-    let cardCenters: number[] = [];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let disposeScene: (() => void) | undefined;
+    let disposed = false;
+    let nodePositions: number[] = [];
+    // Mutated on measure so checkpoints follow actual wrapping/row heights.
+    const checkpoints: number[] = [];
 
     const measure = () => {
-      viewportCenter = window.innerWidth / 2;
-      cardCenters = cards.map((card) =>
-        card ? card.offsetLeft + card.offsetWidth / 2 : viewportCenter,
-      );
-    };
-
-    const getCardPosition = (pageProgress: number) => {
-      // Brief easing at either end, without a long dead-scroll entry/exit.
-      // The shared checkpoint guard already gives each role a settled state.
-      const journey = clamp(pageProgress);
-      const transitionCount = EXPERIENCES.length - 1;
-      const scaled = journey * transitionCount;
-      const segment = Math.min(Math.floor(scaled), transitionCount - 1);
-      const local = segment === transitionCount - 1 && journey === 1
-        ? 1
-        : scaled - segment;
-      const moving = smoothstep(clamp((local - 0.04) / 0.92));
-      return segment + moving;
-    };
-
-    const render = (pageProgress: number) => {
-      const position = getCardPosition(pageProgress);
-      const lowerIndex = Math.min(
-        EXPERIENCES.length - 1,
-        Math.floor(position),
-      );
-      const upperIndex = Math.min(EXPERIENCES.length - 1, lowerIndex + 1);
-      const mix = position - lowerIndex;
-      const lowerCenter = cardCenters[lowerIndex] ?? viewportCenter;
-      const upperCenter = cardCenters[upperIndex] ?? lowerCenter;
-      const activeCenter = lowerCenter + (upperCenter - lowerCenter) * mix;
-
-      rail.style.transform = `translate3d(${viewportCenter - activeCenter}px, 0, 0)`;
-
-      cards.forEach((card, index) => {
-        if (!card) return;
-        const focus = smoothstep(clamp(1 - Math.abs(position - index)));
-        card.style.setProperty("--focus", focus.toFixed(4));
+      const timelineTop = timeline.getBoundingClientRect().top;
+      nodePositions = rowRefs.current.map((row) => {
+        const node = row?.querySelector<HTMLElement>("[data-timeline-node]");
+        const rect = node?.getBoundingClientRect();
+        return rect ? rect.top + rect.height / 2 - timelineTop : 0;
       });
+      const first = nodePositions[0] ?? 0;
+      const distance = Math.max(1, (nodePositions.at(-1) ?? first) - first);
+      line.style.top = `${first}px`;
+      line.style.height = `${distance}px`;
+      checkpoints.splice(0, checkpoints.length,
+        ...nodePositions.map((position) => (position - first) / distance));
+    };
 
-      const activeIndex = Math.round(position);
-      if (counterRef.current) {
-        counterRef.current.textContent = formatIndex(activeIndex);
+    const getBounds = () => {
+      const top = window.scrollY + timeline.getBoundingClientRect().top;
+      // The next entry settles comfortably within the viewport, not at its edge.
+      const anchor = window.innerHeight * 0.6;
+      return {
+        start: top + (nodePositions[0] ?? 0) - anchor,
+        end: top + (nodePositions.at(-1) ?? 0) - anchor,
+      };
+    };
+
+    const render = (progress: number) => {
+      fill.style.transform = `scaleY(${progress})`;
+      rowRefs.current.forEach((row, index) => {
+        if (!row) return;
+        const stop = checkpoints[index] ?? 1;
+        const previous = checkpoints[index - 1] ?? 0;
+        // Reveal only in the final stretch approaching a node. Completed
+        // entries stay at full opacity; reverse scrolling retraces the line.
+        const revealWindow = Math.max(0.001, (stop - previous) * 0.22);
+        const reveal = index === 0 ? 1
+          : smoothstep(clamp((progress - stop + revealWindow) / revealWindow));
+        row.style.setProperty("--reveal", reveal.toFixed(4));
+        row.dataset.reveal = reveal.toFixed(4);
+        row.dataset.checkpoint = stop.toFixed(4);
+      });
+    };
+
+    const configure = () => {
+      disposeScene?.();
+      disposeScene = undefined;
+      measure();
+      if (reducedMotion.matches) {
+        delete track.dataset.timelineAnimated;
+        render(1);
+        return;
       }
-
-      segmentRefs.current.forEach((segment, index) => {
-        if (!segment) return;
-        const segmentFocus = smoothstep(clamp(1 - Math.abs(position - index)));
-        segment.style.setProperty("--segment-focus", segmentFocus.toFixed(4));
+      disposeScene = animatePinnedScene(track, render, {
+        checkpoints,
+        minimumTravelMs: 1600,
+        followThroughMs: 85,
+        lookAhead: 0.22,
+        holdMs: 40,
+        measure,
+        getBounds,
       });
-
-      edgeProgressRef.current?.style.setProperty(
-        "--journey-progress",
-        pageProgress.toFixed(4),
-      );
+      track.dataset.timelineAnimated = "true";
     };
 
-    return animatePinnedScene(track, render, {
-      checkpoints: [0, 0.25, 0.5, 0.75, 1],
-      minimumTravelMs: 2400,
-      followThroughMs: EXPERIENCE_FOLLOW_THROUGH_MS,
-      lookAhead: 0.20,
-      holdMs: 60,
-      measure,
+    configure();
+    reducedMotion.addEventListener("change", configure);
+    const observer = new ResizeObserver(() => {
+      if (!disposed) configure();
     });
+    observer.observe(timeline);
+    // Font loading can change wrapping after the first measurement.
+    void document.fonts.ready.then(() => { if (!disposed) configure(); });
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      reducedMotion.removeEventListener("change", configure);
+      disposeScene?.();
+      delete track.dataset.timelineAnimated;
+    };
   }, []);
 
   return (
-    <section
-      id="experience"
-      className={styles.section}
-      aria-labelledby="experience-title"
-    >
+    <section id="experience" className={styles.section} aria-labelledby="experience-title">
       <div ref={trackRef} className={styles.track}>
-        <div className={styles.stage}>
-          <header className={styles.header}>
-            <h2 id="experience-title" className={styles.title}>
-              Where I&apos;ve Been
-            </h2>
-            <p className={styles.counter} aria-label={`${EXPERIENCES.length} experience entries`}>
-              <span ref={counterRef}>01</span>
-              <span className={styles.counterDivider}>/</span>
-              <span>{formatIndex(EXPERIENCES.length - 1)}</span>
-            </p>
-          </header>
+        <header className={styles.header}>
+          <h2 id="experience-title" className={styles.title}>Where I&apos;ve Been</h2>
+        </header>
 
-          <div className={styles.railViewport}>
-          <div
-            ref={railRef}
-            className={styles.rail}
-            aria-label="Professional experience"
-          >
+        <div className={styles.timelineWrapper}>
+          <div ref={lineRef} className={styles.line} aria-hidden="true">
+            <span ref={fillRef} className={styles.lineFill} />
+          </div>
+          <ol ref={timelineRef} className={styles.timeline} aria-label="Professional experience">
             {EXPERIENCES.map((experience, index) => (
-              <article
-                key={`${experience.company}-${experience.role}`}
-                ref={(node) => {
-                  cardRefs.current[index] = node;
-                }}
-                className={styles.experienceCard}
-              >
-                <span className={styles.cardNumber} aria-hidden="true">
-                  {formatIndex(index)}
-                </span>
-
-                <div className={styles.cardContent}>
-                  <div className={styles.cardTopline}>
-                    <p className={styles.company}>{experience.company}</p>
-                    {"marker" in experience && (
-                      <span className={styles.marker}>{experience.marker}</span>
-                    )}
+              <li key={`${experience.company}-${experience.role}`}
+                ref={(node) => { rowRefs.current[index] = node; }}
+                className={styles.timelineRow}>
+                <span data-timeline-node className={styles.node} aria-hidden="true" />
+                <span className={styles.connector} aria-hidden="true" />
+                <article className={styles.entry} aria-labelledby={`experience-role-${index}`}>
+                  <div className={styles.companyMark} aria-hidden="true">{experience.initials}</div>
+                  <div className={styles.companyHeading}>
+                    <h3 className={styles.company}>{experience.company}</h3>
+                    {"marker" in experience && <span className={styles.marker}>{experience.marker}</span>}
                   </div>
-
-                  {"companyLong" in experience && (
-                    <p className={styles.companyLong}>{experience.companyLong}</p>
-                  )}
-
-                  <h3 className={styles.role}>{experience.role}</h3>
+                  {"companyLong" in experience && <p className={styles.companyLong}>{experience.companyLong}</p>}
+                  <h4 id={`experience-role-${index}`} className={styles.role}>{experience.role}</h4>
+                  <p className={styles.meta}>
+                    <span>{experience.period}</span><span aria-hidden="true">/</span><span>{experience.location}</span>
+                  </p>
                   <p className={styles.description}>{experience.description}</p>
-
-                  <footer className={styles.cardFooter}>
-                    <p className={styles.meta}>
-                      <span>{experience.period}</span>
-                      <span aria-hidden="true">/</span>
-                      <span>{experience.location}</span>
-                    </p>
-                    <ul className={styles.tags} aria-label={`${experience.role} skills`}>
-                      {experience.tags.map((tag) => (
-                        <li key={tag}>{tag}</li>
-                      ))}
-                    </ul>
-                  </footer>
-                </div>
-              </article>
+                  <ul className={styles.tags} aria-label={`${experience.role} skills`}>
+                    {experience.tags.map((tag) => <li key={tag}>{tag}</li>)}
+                  </ul>
+                </article>
+              </li>
             ))}
-          </div>
-          </div>
-
-          <div className={styles.progress} aria-hidden="true">
-            {EXPERIENCES.map((experience, index) => (
-              <span
-                key={`${experience.role}-progress`}
-                ref={(node) => {
-                  segmentRefs.current[index] = node;
-                }}
-                className={styles.progressSegment}
-              />
-            ))}
-          </div>
-
-          <div className={styles.edgeTrack} aria-hidden="true">
-            <span ref={edgeProgressRef} className={styles.edgeProgress} />
-          </div>
+          </ol>
         </div>
       </div>
     </section>

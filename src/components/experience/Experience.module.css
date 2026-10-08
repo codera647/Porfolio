@@ -2,519 +2,292 @@
   position: relative;
   width: 100%;
   color: var(--text-primary);
-  background: var(--canvas);
-}
-
-.track {
-  position: relative;
-  width: 100%;
-  height: 400svh;
-}
-
-.stage {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  height: 100svh;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  row-gap: clamp(18px, 3svh, 32px);
-  padding-bottom: clamp(24px, 4svh, 46px);
-  overflow: hidden;
-  isolation: isolate;
   background:
     var(--grain-soft),
-    radial-gradient(ellipse 48% 72% at 82% 43%, rgb(135 57 42 / 20%), transparent 72%),
-    radial-gradient(ellipse 30% 44% at 12% 88%, rgb(135 57 42 / 11%), transparent 76%),
+    radial-gradient(ellipse 48% 30% at 82% 23%, rgb(135 57 42 / 14%), transparent 72%),
     var(--canvas);
-  background-repeat: repeat, no-repeat, no-repeat;
   background-size: 160px 160px, auto, auto;
 }
 
-.header {
-  position: relative;
-  z-index: 4;
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 32px;
-  padding: clamp(30px, 5.5svh, 58px) clamp(32px, 6vw, 96px) 0;
-  pointer-events: none;
+.track {
+  padding: clamp(56px, 8vw, 110px) clamp(23px, 6vw, 96px) max(100px, 45svh);
 }
 
-.counter,
-.company,
-.companyLong,
-.meta,
-.marker,
-.tags {
-  font-family: var(--font-mono);
+.header {
+  margin-bottom: clamp(64px, 8vw, 112px);
 }
 
 .title {
-  min-width: 0;
   font-size: clamp(3rem, 5.2vw, 5.9rem);
   font-weight: var(--weight-name-rest);
   font-variation-settings: "wght" 280;
-  line-height: 0.96;
-  letter-spacing: -0.055em;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-
-.counter {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding-top: 0.06em;
-  font-size: clamp(1.55rem, 3vw, 3.25rem);
-  font-weight: var(--weight-medium);
-  line-height: 1;
-  letter-spacing: -0.05em;
-  color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
-}
-
-.counterDivider,
-.counter > span:last-child {
-  font-size: 0.43em;
-  color: rgb(248 248 248 / 42%);
-}
-
-.railViewport {
-  position: relative;
-  min-height: 0;
-}
-
-.rail {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  display: flex;
-  gap: clamp(22px, 2.3vw, 42px);
-  width: max-content;
-  height: 100%;
-  align-items: center;
-  padding-right: 22vw;
-  padding-left: 22vw;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-}
-
-.experienceCard {
-  --focus: 0;
-  --inactive-scale: 0.74;
-
-  position: relative;
-  display: flex;
-  width: clamp(650px, 58vw, 960px);
-  height: min(100%, clamp(410px, 57svh, 540px));
-  flex-shrink: 0;
-  min-width: 0;
-  overflow: hidden;
-  isolation: isolate;
-  border: 1px solid rgb(248 248 248 / calc(0.14 + var(--focus) * 0.18));
-  border-radius: 0;
-  color: var(--text-primary);
-  background-color: var(--canvas);
-  background-image: var(--grain-soft);
-  background-repeat: repeat;
-  background-size: 160px 160px;
-  box-shadow: 0 30px 80px rgb(0 0 0 / 32%);
-  opacity: calc(0.34 + var(--focus) * 0.66);
-  transform:
-    translate3d(0, calc((1 - var(--focus)) * 24px), 0)
-    scale(calc(var(--inactive-scale) + (1 - var(--inactive-scale)) * var(--focus)));
-  will-change: transform, opacity;
-}
-
-.experienceCard:first-child {
-  --focus: 1;
-}
-
-.experienceCard::before,
-.experienceCard::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  pointer-events: none;
-}
-
-.experienceCard::before {
-  z-index: -2;
-  background-color: var(--rust);
-  opacity: var(--focus);
-}
-
-.experienceCard::after {
-  z-index: -1;
-  background-image: var(--grain-tile);
-  background-repeat: repeat;
-  background-size: 160px 160px;
-  mix-blend-mode: soft-light;
-  opacity: calc(0.38 + var(--focus) * 0.62);
-}
-
-.cardNumber {
-  position: absolute;
-  top: 18px;
-  right: 24px;
-  z-index: 0;
-  font-size: clamp(5.5rem, 10vw, 10rem);
-  font-weight: var(--weight-bold);
-  line-height: 1;
-  letter-spacing: -0.08em;
-  color: rgb(248 248 248 / calc(0.035 + var(--focus) * 0.045));
-}
-
-.cardContent {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  padding: clamp(20px, min(3.3vw, 4.8svh), 52px);
-  flex-direction: column;
-}
-
-.cardTopline {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 14px;
-}
-
-.company {
-  overflow: hidden;
-  font-size: clamp(0.72rem, 0.9vw, 0.875rem);
-  font-weight: var(--weight-semibold);
-  line-height: 1.3;
-  letter-spacing: 0.12em;
-  color: rgb(248 248 248 / 74%);
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.companyLong {
-  margin-top: 7px;
-  font-size: clamp(0.64rem, 0.78vw, 0.75rem);
-  line-height: 1.4;
-  color: rgb(248 248 248 / 48%);
-}
-
-.marker {
-  display: inline-flex;
-  min-height: 27px;
-  padding: 5px 10px;
-  align-items: center;
-  border: 1px solid rgb(248 248 248 / 32%);
-  font-size: clamp(0.62rem, 0.72vw, 0.7rem);
-  font-weight: var(--weight-semibold);
-  line-height: 1;
-  letter-spacing: 0.08em;
-  color: var(--text-primary);
-  text-transform: uppercase;
-}
-
-.role {
-  max-width: 82%;
-  margin-top: clamp(20px, 3svh, 34px);
-  font-size: clamp(1.6rem, min(3.35vw, 6svh), 3.65rem);
-  font-weight: var(--weight-medium);
-  line-height: 1.02;
+  line-height: 0.98;
   letter-spacing: -0.055em;
   text-wrap: balance;
 }
 
-.description {
-  max-width: 720px;
-  margin-top: clamp(15px, 2.2svh, 24px);
-  font-size: clamp(0.72rem, min(1.05vw, 2.3svh), 1rem);
-  line-height: 1.58;
-  color: rgb(248 248 248 / 76%);
+.timelineWrapper {
+  position: relative;
+  max-width: 1440px;
+  margin-inline: auto;
 }
 
-.cardFooter {
-  display: flex;
-  min-width: 0;
-  margin-top: auto;
-  padding-top: 22px;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  border-top: 1px solid rgb(248 248 248 / 20%);
-}
-
-.meta {
-  display: flex;
-  min-width: max-content;
-  gap: 9px;
-  font-size: clamp(0.66rem, 0.8vw, 0.78rem);
-  font-weight: var(--weight-medium);
-  line-height: 1.35;
-  letter-spacing: 0.025em;
-  color: rgb(248 248 248 / 66%);
-  font-variant-numeric: tabular-nums;
-}
-
-.tags {
-  display: flex;
-  min-width: 0;
+.timeline {
+  position: relative;
   padding: 0;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 7px;
   list-style: none;
 }
 
-.tags li {
-  display: inline-flex;
-  min-height: 29px;
-  padding: 6px 10px;
-  align-items: center;
-  border: 1px solid rgb(248 248 248 / 25%);
-  font-size: clamp(0.62rem, 0.72vw, 0.7rem);
-  font-weight: var(--weight-medium);
-  line-height: 1.15;
-  color: rgb(248 248 248 / 82%);
-  white-space: nowrap;
-}
-
-.progress {
-  position: relative;
-  margin: 0 clamp(32px, 6vw, 96px);
-  z-index: 4;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+.line {
+  position: absolute;
+  top: 28px;
+  bottom: 28px;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(248 248 248 / 13%);
   pointer-events: none;
 }
 
-.progressSegment {
-  --segment-focus: 0;
+.lineFill {
+  position: absolute;
+  inset: 0;
+  background: var(--rust);
+  transform: scaleY(1);
+  transform-origin: top center;
+}
 
+.timelineRow {
+  --reveal: 1;
   position: relative;
-  height: 2px;
-  overflow: hidden;
-  background: rgb(248 248 248 / 16%);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: clamp(72px, 8vw, 120px);
+  padding-bottom: clamp(46px, 5vw, 76px);
 }
 
-.progressSegment:first-child {
-  --segment-focus: 1;
+.timelineRow:last-child {
+  padding-bottom: 0;
 }
 
-.progressSegment::after {
+.entry {
+  position: relative;
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.timelineRow:nth-child(odd) .entry {
+  grid-column: 1;
+}
+
+.timelineRow:nth-child(even) .entry {
+  grid-column: 2;
+}
+
+.track[data-timeline-animated] .timelineRow {
+  --reveal: 0;
+}
+
+.track[data-timeline-animated] .timelineRow:first-child {
+  --reveal: 1;
+}
+
+.track[data-timeline-animated] .entry {
+  opacity: var(--reveal);
+  transform: translate3d(0, calc((1 - var(--reveal)) * 22px), 0);
+}
+
+.node {
+  position: absolute;
+  z-index: 2;
+  top: 24px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border: 1px solid rgb(248 248 248 / 32%);
+  border-radius: 50%;
+  background: var(--canvas);
+}
+
+.node::after {
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  content: "";
+  background: var(--rust);
+  opacity: var(--reveal);
+  box-shadow: 0 0 14px rgb(135 57 42 / 45%);
+}
+
+.connector {
+  position: absolute;
+  top: 31px;
+  left: 50%;
+  width: clamp(36px, 4vw, 60px);
+  height: 1px;
+  background: rgb(248 248 248 / 13%);
+}
+
+.timelineRow:nth-child(odd) .connector {
+  transform: translateX(-100%);
+}
+
+.connector::after {
   position: absolute;
   inset: 0;
   content: "";
   background: var(--rust);
-  opacity: calc(0.2 + var(--segment-focus) * 0.8);
-  transform: scaleX(calc(0.12 + var(--segment-focus) * 0.88));
-  transform-origin: left center;
+  opacity: var(--reveal);
 }
 
-.edgeTrack {
-  position: absolute;
-  top: 14svh;
-  right: 17px;
-  bottom: 14svh;
-  z-index: 4;
-  width: 1px;
-  overflow: hidden;
-  background: rgb(248 248 248 / 12%);
+.companyMark {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 20px;
+  place-items: center;
+  border: 1px solid rgb(248 248 248 / 14%);
+  border-radius: 12px;
+  background: var(--grain-tile), var(--rust);
+  background-size: 160px 160px, auto;
+  background-blend-mode: soft-light;
+  font-size: 1.05rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.05em;
 }
 
-.edgeProgress {
-  --journey-progress: 0;
-
-  position: absolute;
-  inset: 0;
-  background: var(--rust);
-  transform: scaleY(var(--journey-progress));
-  transform-origin: top center;
+.companyHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
 }
 
-@media (max-width: 960px) {
-  .experienceCard {
-    width: 66vw;
-  }
+.company {
+  font-size: clamp(1.2rem, 1.8vw, 1.85rem);
+  font-weight: var(--weight-semibold);
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
 
-  .cardFooter {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
-  }
+.marker {
+  padding: 4px 7px;
+  border: 1px solid rgb(135 57 42 / 70%);
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
 
-  .tags {
-    justify-content: flex-start;
-  }
+.companyLong {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: rgb(248 248 248 / 48%);
+}
+
+.role {
+  margin-top: 18px;
+  font-size: clamp(1rem, 1.25vw, 1.3rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 7px;
+  font-size: clamp(0.65rem, 0.8vw, 0.8rem);
+  line-height: 1.55;
+  color: rgb(248 248 248 / 48%);
+  font-variant-numeric: tabular-nums;
+}
+
+.description {
+  margin-top: 21px;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+  line-height: 1.75;
+  color: rgb(248 248 248 / 72%);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  max-width: 100%;
+  padding: 5px 9px;
+  border: 1px solid rgb(248 248 248 / 18%);
+  border-radius: 4px;
+  font-size: clamp(0.6rem, 0.75vw, 0.72rem);
+  line-height: 1.5;
+  color: rgb(248 248 248 / 64%);
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 680px) {
   .track {
-    height: 365svh;
-  }
-
-  .header {
-    gap: 18px;
-    padding: max(28px, 5svh) 23px 0;
+    padding-inline: 23px;
   }
 
   .title {
-    font-size: clamp(2.15rem, 10.5vw, 3.4rem);
-    line-height: 0.98;
-    white-space: normal;
+    font-size: clamp(2.35rem, 10.5vw, 3.5rem);
   }
 
-  .counter {
-    font-size: 1.75rem;
+  .header {
+    margin-bottom: 52px;
   }
 
-  .rail {
-    gap: 0;
-    padding-right: 8vw;
-    padding-left: 8vw;
+  .line,
+  .node {
+    left: 7px;
   }
 
-  .experienceCard {
-    --inactive-scale: 0.9;
-
-    width: 84vw;
-    height: min(100%, 480px);
+  .timelineRow {
+    display: block;
+    padding-left: 39px;
+    padding-bottom: 54px;
   }
 
-  .cardContent {
-    padding: 22px 20px 20px;
+  .connector {
+    left: 7px;
+    width: 32px;
   }
 
-  .cardNumber {
-    top: 14px;
-    right: 17px;
-    font-size: 5.25rem;
+  .timelineRow:nth-child(odd) .connector {
+    transform: none;
   }
 
   .company {
-    max-width: 66%;
-    font-size: 0.64rem;
-  }
-
-  .companyLong {
-    max-width: 75%;
-    margin-top: 5px;
-    font-size: 0.58rem;
-  }
-
-  .marker {
-    min-height: 24px;
-    padding: 5px 8px;
-    font-size: 0.55rem;
-  }
-
-  .role {
-    max-width: 92%;
-    margin-top: 20px;
-    font-size: clamp(1.7rem, 8vw, 2.3rem);
+    font-size: 1.25rem;
   }
 
   .description {
-    margin-top: 12px;
-    font-size: clamp(0.68rem, 3vw, 0.78rem);
-    line-height: 1.48;
-  }
-
-  .cardFooter {
-    gap: 10px;
-    padding-top: 13px;
+    font-size: 0.82rem;
   }
 
   .meta {
-    gap: 6px;
-    font-size: 0.58rem;
-  }
-
-  .tags {
-    gap: 5px;
-  }
-
-  .tags li {
-    min-height: 25px;
-    padding: 5px 8px;
-    font-size: 0.56rem;
-  }
-
-  .progress {
-    margin: 0 23px;
-    gap: 6px;
-  }
-
-  .edgeTrack {
-    right: 8px;
-  }
-}
-
-@media (max-width: 390px) and (max-height: 740px) {
-  .header {
-    padding-top: 24px;
-    gap: 12px;
-  }
-
-  .description {
     font-size: 0.65rem;
-  }
-
-  .tags li {
-    min-height: 23px;
-    padding: 4px 7px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track {
-    height: auto;
+  .track[data-timeline-animated] .timelineRow {
+    --reveal: 1 !important;
   }
 
-  .stage {
-    display: block;
-    position: relative;
-    height: auto;
-    min-height: 100svh;
-    overflow: visible;
-    padding-bottom: 52px;
-  }
-
-  .header {
-    margin-bottom: 44px;
-  }
-
-  .rail {
-    position: relative;
-    top: auto;
-    left: auto;
-    display: grid;
-    width: auto;
-    height: auto;
-    padding: 0 clamp(23px, 6vw, 96px);
-    gap: 16px;
-    transform: none !important;
-  }
-
-  .experienceCard,
-  .experienceCard:first-child {
-    --focus: 0;
-
-    width: 100%;
-    height: auto;
-    min-height: 350px;
+  .track[data-timeline-animated] .entry {
     opacity: 1;
     transform: none;
-    will-change: auto;
-  }
-
-  .progress,
-  .edgeTrack {
-    display: none;
   }
 }
