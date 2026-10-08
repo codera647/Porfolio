@@ -96,6 +96,8 @@ try {
   }
   assert.deepEqual([...seen].sort(),[0,1,2,3,4],"Fast mobile wheel input skipped an entry");
   console.log("PASS fast input at 320px completes all five entries in order.");
+  // Let the final Lenis wheel target settle before a programmatic test jump.
+  await sleep(2000);
   await go(0.45);
   const beforeResize=await state();
   // A real browser URL bar changes innerHeight without changing the stable

@@ -1,6 +1,6 @@
 // Run with: node --experimental-strip-types tools/preview/pinned-scroll.test.mjs
 import assert from "node:assert/strict";
-import { animatePinnedScene, boundPinnedScroll } from "../../src/lib/pinnedScroll.ts";
+import { animatePinnedScene, boundPinnedScroll, syncPinnedScenes } from "../../src/lib/pinnedScroll.ts";
 
 let time = 0;
 let frameId = 0;
@@ -110,6 +110,8 @@ for (let tick = 0; tick < 1000 && window.scrollY <= 1100; tick++) {
 assert(window.scrollY > 1100, "Natural-flow timeline must release");
 assert(timelineStops.slice(1).every(stop => timelineSettled.has(stop.toFixed(2))));
 assert.equal(timelinePainted.at(-1), 1, "Scroll-linked progress must match the scroll position, not trail it");
+syncPinnedScenes();
+assert.equal(timelineTrack.dataset.scenePhase, "complete", "Frame syncing must retain terminal completion");
 disposeTimeline();
 assert.equal(boundPinnedScroll(0, 10000, time).guarded, false);
 console.log("PASS: natural-flow node bounds complete every uneven checkpoint.");
