@@ -86,10 +86,12 @@ const timelineTrack = {
   getBoundingClientRect: () => ({ top: 100 - window.scrollY, height: 1200 }),
 };
 const timelineStops = [0, 0.21, 0.48, 0.74, 1];
-const disposeTimeline = animatePinnedScene(timelineTrack, () => {}, {
+const timelinePainted = [];
+const disposeTimeline = animatePinnedScene(timelineTrack, (progress) => timelinePainted.push(progress), {
   checkpoints: timelineStops, minimumTravelMs: 1600,
   followThroughMs: 85, lookAhead: 0.22, holdMs: 40,
   getBounds: () => ({ start: 100, end: 1100 }),
+  scrollLinked: true,
 });
 input(10000);
 assert.equal(window.scrollY, 100, "Timeline must land at its first node");
@@ -99,10 +101,15 @@ for (let tick = 0; tick < 1000 && window.scrollY <= 1100; tick++) {
   advance();
   if (timelineTrack.dataset.scenePhase === "holding") {
     timelineSettled.add(Number(timelineTrack.dataset.sceneProgress).toFixed(2));
+    const beforeRefresh = timelineTrack.dataset.sceneProgress;
+    disposeTimeline.refresh();
+    assert.equal(timelineTrack.dataset.sceneProgress, beforeRefresh);
+    assert.equal(timelineTrack.dataset.scenePhase, "holding", "Remeasurement restarted the checkpoint guard");
   }
 }
 assert(window.scrollY > 1100, "Natural-flow timeline must release");
 assert(timelineStops.slice(1).every(stop => timelineSettled.has(stop.toFixed(2))));
+assert.equal(timelinePainted.at(-1), 1, "Scroll-linked progress must match the scroll position, not trail it");
 disposeTimeline();
 assert.equal(boundPinnedScroll(0, 10000, time).guarded, false);
 console.log("PASS: natural-flow node bounds complete every uneven checkpoint.");

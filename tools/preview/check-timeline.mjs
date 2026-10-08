@@ -54,6 +54,14 @@ try {
   await go(0.1);
   assert((await state()).rows.slice(1).every(row=>row.opacity===0));
   console.log("PASS line-first progression, gradual entry reveals, and reverse scrolling.");
+  await b.waitFor("[...document.querySelectorAll('#experience article img')].every(img=>img.complete&&img.naturalWidth>0)");
+  const logos=await b.evaluate(`({names:[...document.querySelectorAll('#experience article h3')].map(h=>h.textContent),
+    logos:[...document.querySelectorAll('#experience article img')].map(img=>({src:img.src,fit:getComputedStyle(img).objectFit}))})`);
+  assert.deepEqual(logos.names,["Kinetiq Solutions","Kinetiq Solutions","Digifloat","Prosilient Systems Inc.","CARE"]);
+  assert.deepEqual(logos.logos.map(img=>["kinetiq-solutions","digifloat","prosilient-systems","care"].find(name=>img.src.includes(name))),
+    ["kinetiq-solutions","kinetiq-solutions","digifloat","prosilient-systems","care"]);
+  assert(logos.logos.every(img=>img.fit==='contain'));
+  console.log("PASS all supplied company logos load without cropping, and company names are correct.");
 
   for(const [width,height] of [[1920,720],[1366,600],[768,900],[390,844],[320,740]]) {
     await b.send("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<680});
@@ -88,6 +96,17 @@ try {
   }
   assert.deepEqual([...seen].sort(),[0,1,2,3,4],"Fast mobile wheel input skipped an entry");
   console.log("PASS fast input at 320px completes all five entries in order.");
+  await go(0.45);
+  const beforeResize=await state();
+  // A real browser URL bar changes innerHeight without changing the stable
+  // CSS svh viewport. DeviceMetricsOverride would instead resize every section
+  // above the timeline, which is a different full-layout resize.
+  await b.evaluate("Object.defineProperty(window,'innerHeight',{configurable:true,value:650});window.dispatchEvent(new Event('resize'))");
+  await sleep(300);
+  const afterResize=await state();
+  assert(Math.abs(afterResize.progress-beforeResize.progress)<0.001,`Mobile browser-bar resize snapped the animation: ${JSON.stringify({beforeResize,afterResize})}`);
+  assert(afterResize.rows.every((row,i)=>Math.abs(row.opacity-beforeResize.rows[i].opacity)<0.001));
+  console.log("PASS small mobile viewport-height changes do not reset or snap the reveals.");
   await b.send("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
   await b.waitFor("!document.querySelector('#experience [data-scroll-scene]')");
   assert(await b.evaluate("[...document.querySelectorAll('#experience article')].every(a=>getComputedStyle(a).opacity==='1'&&getComputedStyle(a).transform==='none')"));

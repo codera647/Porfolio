@@ -55,6 +55,7 @@
   background: var(--rust);
   transform: scaleY(1);
   transform-origin: top center;
+  will-change: transform;
 }
 
 .timelineRow {
@@ -95,6 +96,7 @@
 .track[data-timeline-animated] .entry {
   opacity: var(--reveal);
   transform: translate3d(0, calc((1 - var(--reveal)) * 22px), 0);
+  will-change: transform, opacity;
 }
 
 .node {
@@ -141,20 +143,15 @@
   opacity: var(--reveal);
 }
 
-.companyMark {
-  display: grid;
-  width: 46px;
-  height: 46px;
+.companyLogo {
+  display: block;
+  width: auto;
+  height: 48px;
+  max-width: 100%;
   margin-bottom: 20px;
-  place-items: center;
   border: 1px solid rgb(248 248 248 / 14%);
   border-radius: 12px;
-  background: var(--grain-tile), var(--rust);
-  background-size: 160px 160px, auto;
-  background-blend-mode: soft-light;
-  font-size: 1.05rem;
-  font-weight: var(--weight-semibold);
-  letter-spacing: -0.05em;
+  object-fit: contain;
 }
 
 .companyHeading {
@@ -289,5 +286,6 @@
   .track[data-timeline-animated] .entry {
     opacity: 1;
     transform: none;
+    will-change: auto;
   }
 }

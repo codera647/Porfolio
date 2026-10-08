@@ -1,13 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Experience.module.css";
 
+const LOGOS = {
+  kinetiq: { src: "/experience/kinetiq-solutions.png", width: 296, height: 192 },
+  digifloat: { src: "/experience/digifloat.png", width: 192, height: 192 },
+  prosilient: { src: "/experience/prosilient-systems.png", width: 429, height: 192 },
+  care: { src: "/experience/care.png", width: 192, height: 192 },
+} as const;
+
 const EXPERIENCES = [
   {
-    company: "kinetiq",
-    initials: "K",
+    company: "Kinetiq Solutions",
+    logo: LOGOS.kinetiq,
     role: "AI/ML Team Lead",
     period: "Jul 2026 - Present",
     location: "Remote",
@@ -17,8 +25,8 @@ const EXPERIENCES = [
     marker: "Promoted",
   },
   {
-    company: "kinetiq",
-    initials: "K",
+    company: "Kinetiq Solutions",
+    logo: LOGOS.kinetiq,
     role: "AI/ML Engineer",
     period: "Sep 2025 - Jun 2026",
     location: "Remote",
@@ -28,7 +36,7 @@ const EXPERIENCES = [
   },
   {
     company: "Digifloat",
-    initials: "D",
+    logo: LOGOS.digifloat,
     role: "Artificial Intelligence Intern",
     period: "Apr 2026 - Jul 2026",
     location: "Hybrid",
@@ -38,7 +46,7 @@ const EXPERIENCES = [
   },
   {
     company: "Prosilient Systems Inc.",
-    initials: "PS",
+    logo: LOGOS.prosilient,
     role: "AI Researcher",
     period: "Jul 2025 - Sep 2025",
     location: "Remote",
@@ -49,7 +57,7 @@ const EXPERIENCES = [
   {
     company: "CARE",
     companyLong: "Center for Advanced Research in Engineering",
-    initials: "C",
+    logo: LOGOS.care,
     role: "AI Developer",
     period: "Jul 2024 - Sep 2024",
     location: "On-site",
@@ -78,14 +86,24 @@ export function Experience() {
     if (!track || !timeline || !line || !fill) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let disposeScene: (() => void) | undefined;
+    let disposeScene: ReturnType<typeof animatePinnedScene> | undefined;
     let disposed = false;
     let nodePositions: number[] = [];
     // Mutated on measure so checkpoints follow actual wrapping/row heights.
     const checkpoints: number[] = [];
+    // Mobile URL bars resize the viewport mid-scroll; ignore those small
+    // height-only changes so the anchor (and the drawn line) never jumps.
+    let anchorWidth = 0;
+    let anchorHeight = 0;
+    let timelineDocumentTop = 0;
 
     const measure = () => {
+      if (window.innerWidth !== anchorWidth || Math.abs(window.innerHeight - anchorHeight) > 160) {
+        anchorWidth = window.innerWidth;
+        anchorHeight = window.innerHeight;
+      }
       const timelineTop = timeline.getBoundingClientRect().top;
+      timelineDocumentTop = window.scrollY + timelineTop;
       nodePositions = rowRefs.current.map((row) => {
         const node = row?.querySelector<HTMLElement>("[data-timeline-node]");
         const rect = node?.getBoundingClientRect();
@@ -100,9 +118,9 @@ export function Experience() {
     };
 
     const getBounds = () => {
-      const top = window.scrollY + timeline.getBoundingClientRect().top;
+      const top = timelineDocumentTop;
       // The next entry settles comfortably within the viewport, not at its edge.
-      const anchor = window.innerHeight * 0.6;
+      const anchor = anchorHeight * 0.6;
       return {
         start: top + (nodePositions[0] ?? 0) - anchor,
         end: top + (nodePositions.at(-1) ?? 0) - anchor,
@@ -116,7 +134,7 @@ export function Experience() {
       // Draw to the next node first, then use the last 22% of that same scroll
       // interval to reveal its entry. No extra timer or dead-scroll pause.
       const lineProgress = nextIndex < 0 ? 1 : previousStop
-        + clamp((progress - previousStop) / Math.max(0.001, (nextStop - previousStop) * 0.78))
+        + smoothstep(clamp((progress - previousStop) / Math.max(0.001, (nextStop - previousStop) * 0.78)))
         * (nextStop - previousStop);
       fill.style.transform = `scaleY(${lineProgress})`;
       rowRefs.current.forEach((row, index) => {
@@ -151,18 +169,28 @@ export function Experience() {
         holdMs: 40,
         measure,
         getBounds,
+        // The rows scroll with the page, so the line must follow Lenis' already
+        // smoothed position exactly; an extra easing layer made it wobble.
+        scrollLinked: true,
       });
       track.dataset.timelineAnimated = "true";
     };
 
     configure();
     reducedMotion.addEventListener("change", configure);
+    const refresh = () => {
+      if (disposed) return;
+      // Remeasure the same scene, retaining its guard/checkpoint state. Recreating
+      // it here used to restart the scroll animation on font/size changes.
+      if (disposeScene) disposeScene.refresh();
+      else measure();
+    };
     const observer = new ResizeObserver(() => {
-      if (!disposed) configure();
+      refresh();
     });
     observer.observe(timeline);
     // Font loading can change wrapping after the first measurement.
-    void document.fonts.ready.then(() => { if (!disposed) configure(); });
+    void document.fonts.ready.then(refresh);
     return () => {
       disposed = true;
       observer.disconnect();
@@ -191,7 +219,10 @@ export function Experience() {
                 <span data-timeline-node className={styles.node} aria-hidden="true" />
                 <span className={styles.connector} aria-hidden="true" />
                 <article className={styles.entry} aria-labelledby={`experience-role-${index}`}>
-                  <div className={styles.companyMark} aria-hidden="true">{experience.initials}</div>
+                  {/* Decorative: the company name is announced by the heading below. */}
+                  <Image className={styles.companyLogo} src={experience.logo.src}
+                    width={experience.logo.width} height={experience.logo.height}
+                    alt="" sizes="160px" />
                   <div className={styles.companyHeading}>
                     <h3 className={styles.company}>{experience.company}</h3>
                     {"marker" in experience && <span className={styles.marker}>{experience.marker}</span>}

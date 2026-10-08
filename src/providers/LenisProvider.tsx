@@ -3,7 +3,7 @@
 import Lenis from "lenis";
 import { useEffect, useLayoutEffect, useRef, ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { boundPinnedScroll } from "@/lib/pinnedScroll";
+import { boundPinnedScroll, syncPinnedScenes } from "@/lib/pinnedScroll";
 
 interface Props {
   children: ReactNode;
@@ -62,6 +62,8 @@ export function LenisProvider({ children }: Props) {
       },
     });
     lenisRef.current = lenis;
+    // Same-frame paint for scroll-linked scenes (no browser scroll-event lag).
+    const offScroll = lenis.on("scroll", syncPinnedScenes);
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (prefersReduced || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey
@@ -90,6 +92,7 @@ export function LenisProvider({ children }: Props) {
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
       }
+      offScroll();
       lenis.destroy();
       lenisRef.current = null;
       window.removeEventListener("keydown", onKeyDown);

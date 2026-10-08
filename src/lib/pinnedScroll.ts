@@ -8,6 +8,12 @@ type SceneOptions = {
   measure?: () => void;
   /** Natural-flow timelines use node positions instead of a sticky stage. */
   getBounds?: () => { start: number; end: number };
+  /**
+   * Render straight from the (already Lenis-smoothed) scroll position instead
+   * of easing toward it. Required for content that scrolls with the page: a
+   * second easing layer lags the moving page and makes the drawn line wobble.
+   */
+  scrollLinked?: boolean;
 };
 
 type Scene = {
@@ -18,6 +24,9 @@ type Scene = {
   direction: number;
   stopIndex: number;
   settledAt: number | null;
+  /** Scroll distance in px; lets settlement tolerate sub-pixel scroll rounding. */
+  distance: number;
+  sync: () => void;
 };
 
 const scenes = new Set<Scene>();
@@ -38,12 +47,22 @@ function bounds(scene: Scene) {
 
 function updateSettlement(scene: Scene, now: number) {
   const stop = scene.options.checkpoints[scene.stopIndex];
+  // Scroll-linked progress comes from rounded scroll positions; never miss a
+  // stop by a fraction of a pixel. Eased scenes converge on the stop exactly.
+  const tolerance = scene.options.scrollLinked ? Math.max(EPSILON, 1.5 / scene.distance) : EPSILON;
   const settled = scene.direction !== 0
-    && Math.abs(scene.progress - stop) <= EPSILON
-    && Math.abs(scene.target - scene.progress) <= EPSILON;
+    && Math.abs(scene.progress - stop) <= tolerance
+    && Math.abs(scene.target - scene.progress) <= tolerance;
   scene.settledAt = settled ? (scene.settledAt ?? now) : null;
   scene.track.dataset.sceneProgress = scene.progress.toFixed(4);
-  scene.track.dataset.scenePhase = settled ? "holding" : "moving";
+  const terminal = scene.direction > 0
+    ? scene.stopIndex === scene.options.checkpoints.length - 1
+    : scene.stopIndex === 0;
+  // Same-frame scroll syncing can run after the guard releases a scene.
+  // Do not turn a completed terminal checkpoint back into a hold each frame.
+  scene.track.dataset.scenePhase = settled
+    ? (terminal && scene.track.dataset.scenePhase === "complete" ? "complete" : "holding")
+    : "moving";
 }
 
 /**
@@ -111,6 +130,15 @@ export function boundPinnedScroll(from: number, requested: number, now: number) 
   return { target: requested, guarded: false };
 }
 
+/**
+ * Paint scroll-linked scenes in the same frame Lenis moved the page. Calling it
+ * from Lenis' own `scroll` callback avoids the one-frame lag of waiting for the
+ * browser's scroll event, which otherwise shows up as a faint line shimmer.
+ */
+export function syncPinnedScenes() {
+  scenes.forEach((scene) => { if (scene.options.scrollLinked) scene.sync(); });
+}
+
 export function animatePinnedScene(
   track: HTMLElement,
   render: (progress: number) => void,
@@ -118,13 +146,22 @@ export function animatePinnedScene(
 ) {
   let frame: number | null = null;
   let previousTime = performance.now();
-  const scene: Scene = { track, progress: 0, target: 0, options, direction: 0, stopIndex: 0, settledAt: null };
+  let lastPainted = Number.NaN;
+  const scene: Scene = {
+    track, progress: 0, target: 0, options, direction: 0, stopIndex: 0, settledAt: null,
+    distance: 1, sync: () => {},
+  };
   const measureProgress = () => {
     const { start, distance } = bounds(scene);
+    scene.distance = distance;
     return clamp((window.scrollY - start) / distance);
   };
   const paint = (time: number) => {
-    render(scene.progress);
+    // Skip redundant style writes; settlement still needs the timestamp.
+    if (scene.progress !== lastPainted) {
+      lastPainted = scene.progress;
+      render(scene.progress);
+    }
     updateSettlement(scene, time);
   };
   const tick = (time: number) => {
@@ -138,7 +175,15 @@ export function animatePinnedScene(
     paint(time);
     frame = scene.progress === scene.target ? null : requestAnimationFrame(tick);
   };
+  scene.sync = () => {
+    scene.progress = scene.target = measureProgress();
+    paint(performance.now());
+  };
   const requestRender = () => {
+    if (options.scrollLinked) {
+      scene.sync();
+      return;
+    }
     scene.target = measureProgress();
     if (frame === null) {
       previousTime = performance.now();
@@ -148,8 +193,13 @@ export function animatePinnedScene(
   const resize = () => {
     options.measure?.();
     scene.progress = scene.target = measureProgress();
-    scene.direction = 0;
-    scene.settledAt = null;
+    // A natural-flow timeline keeps the current checkpoint when measurements
+    // refresh; mobile browser chrome must not restart its guard mid-scroll.
+    if (!options.scrollLinked) {
+      scene.direction = 0;
+      scene.settledAt = null;
+    }
+    lastPainted = Number.NaN;
     paint(performance.now());
   };
 
@@ -160,7 +210,7 @@ export function animatePinnedScene(
   track.dataset.scrollScene = "";
   window.addEventListener("scroll", requestRender, { passive: true });
   window.addEventListener("resize", resize, { passive: true });
-  return () => {
+  const dispose = () => {
     if (frame !== null) cancelAnimationFrame(frame);
     scenes.delete(scene);
     delete track.dataset.scrollScene;
@@ -169,4 +219,5 @@ export function animatePinnedScene(
     window.removeEventListener("scroll", requestRender);
     window.removeEventListener("resize", resize);
   };
+  return Object.assign(dispose, { refresh: resize });
 }
