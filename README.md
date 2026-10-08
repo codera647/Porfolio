@@ -34,3 +34,26 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Trailforge project
+
+The project grid places Trailforge after the locked Diffwise card. Its static,
+code-native system graphic is in `TrailforgeThumbnail`; no demo or fabricated UI
+screenshots are used.
+
+- Case study: `/projects/trailforge`
+- Technical reading page: `/projects/trailforge/description`
+- Full technical reference download: `/projects/trailforge/description.pdf`
+
+The downloadable PDF is the supplied, unchanged 46-page v0.1.0a1 guide. The web
+study summarizes its implementation in the portfolio's native typography and
+diagram style. `tools/documents/export-pdfs.mjs` regenerates the other projects'
+typeset studies, not this original reference. Replace Trailforge's PDF only when
+an updated guide is intentionally supplied.
+
+With the local preview running, check the new project and the existing grid:
+
+```bash
+node tools/preview/check-trailforge.mjs http://localhost:3200
+node tools/preview/check-projects.mjs http://localhost:3200
+```
