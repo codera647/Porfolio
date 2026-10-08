@@ -1,0 +1,67 @@
+.page {
+  overflow-wrap: anywhere;
+}
+
+.page h1 {
+  font-size: clamp(3.1rem, 9vw, 9.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.075em;
+}
+
+.video {
+  object-fit: contain;
+  background: var(--canvas);
+  aspect-ratio: 16 / 9;
+}
+
+.caption {
+  margin-top: 18px;
+  color: rgb(248 248 248 / 52%);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 28px 0 42px;
+  padding: 0;
+  list-style: none;
+}
+
+.formats li {
+  padding: 10px 14px;
+  border: 1px solid rgb(248 248 248 / 20%);
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.modelName,
+.modelDetail {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.modelDetail {
+  margin-top: 9px;
+  color: rgb(248 248 248 / 52%);
+  line-height: 1.7;
+}
+
+.note {
+  padding: 22px;
+  margin-top: 32px;
+  border: 1px solid rgb(248 248 248 / 18%);
+  border-radius: 18px;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: rgb(248 248 248 / 68%);
+}
+
+@media (max-width: 800px) {
+  .page h1 {
+    font-size: clamp(2rem, 11vw, 5.5rem);
+  }
+}

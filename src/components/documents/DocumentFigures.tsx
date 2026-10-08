@@ -8,6 +8,7 @@ import {
   AutobgReflectionDiagram, AutobgBackgroundDiagram, AutobgPlateDiagram, AutobgRelightDiagram,
 } from "@/components/projects/AutobgDiagrams";
 import SynapseBenchmarkCharts from "@/components/projects/SynapseBenchmarkCharts";
+import { ContentforgeArchitectureDiagram, ContentforgeGenerationDiagram, ContentforgeWorkflowDiagram, ContentforgeDataDiagram } from "@/components/projects/ContentforgeDiagrams";
 import styles from "./ProjectDocument.module.css";
 
 function RuntimeChart() {
@@ -52,6 +53,10 @@ const figures = {
   "autobg-plate": AutobgPlateDiagram,
   "autobg-relight": AutobgRelightDiagram,
   "autobg-runtime": RuntimeChart,
+  "contentforge-architecture": ContentforgeArchitectureDiagram,
+  "contentforge-generation": ContentforgeGenerationDiagram,
+  "contentforge-workflow": ContentforgeWorkflowDiagram,
+  "contentforge-data": ContentforgeDataDiagram,
 } satisfies Record<DiagramId, () => React.JSX.Element>;
 
 export function DocumentFigure({ id }: { id: DiagramId }) {

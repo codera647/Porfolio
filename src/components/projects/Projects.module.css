@@ -114,11 +114,13 @@
   object-fit: cover;
 }
 
-.autobgMedia {
+.autobgMedia,
+.containedMedia {
   background: #303030;
 }
 
-.autobgMedia .previewVideo {
+.autobgMedia .previewVideo,
+.containedMedia .previewVideo {
   object-fit: contain;
 }
 

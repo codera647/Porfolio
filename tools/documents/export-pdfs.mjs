@@ -2,10 +2,13 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { synapseDocument, autobgDocument } from "../../src/content/projectDocuments.ts";
+import { contentforgeDocument } from "../../src/content/contentforgeDocument.ts";
 import { openBrowser } from "./browser.mjs";
 
 const base = process.argv[2] || "http://localhost:3200";
-const documents = [synapseDocument, autobgDocument];
+const requestedSlug = process.argv[3];
+const documents = [synapseDocument, autobgDocument, contentforgeDocument].filter(document => !requestedSlug || document.slug === requestedSlug);
+if (!documents.length) throw new Error(`Unknown project: ${requestedSlug}`);
 const directory = "tmp/pdfs/typeset";
 await mkdir(directory, { recursive: true });
 await writeFile(`${directory}/documents.json`, JSON.stringify(documents));

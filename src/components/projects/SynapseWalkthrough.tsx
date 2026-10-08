@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import styles from "./SynapseWalkthrough.module.css";
 
 const SCREENS = [
@@ -24,7 +24,23 @@ const SCREENS = [
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
-export function SynapseWalkthrough() {
+export type WalkthroughScreen = {
+  src: string;
+  width: number;
+  height: number;
+  title: string;
+  note: string;
+};
+
+export function SynapseWalkthrough({
+  screens = SCREENS,
+  project = "Synapse",
+  title = "One workspace, from source to cited answer.",
+}: {
+  screens?: readonly WalkthroughScreen[];
+  project?: string;
+  title?: string;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
@@ -58,7 +74,7 @@ export function SynapseWalkthrough() {
 
     const render = () => {
       rail.style.transform = `translate3d(${-current * travel}px, 0, 0)`;
-      const index = Math.min(SCREENS.length - 1, Math.round(current * (SCREENS.length - 1)));
+      const index = Math.min(screens.length - 1, Math.round(current * (screens.length - 1)));
       if (counterRef.current) counterRef.current.textContent = String(index + 1).padStart(2, "0");
     };
 
@@ -95,29 +111,29 @@ export function SynapseWalkthrough() {
       sizeObserver.disconnect();
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [screens]);
 
   return (
     <section className={styles.section} aria-labelledby="walkthrough-title">
       <header className={styles.header}>
         <div>
           <p>01 / Product walkthrough</p>
-          <h2 id="walkthrough-title">One workspace, from source to cited answer.</h2>
+          <h2 id="walkthrough-title">{title}</h2>
         </div>
       </header>
-      <div ref={trackRef} className={styles.track}>
+      <div ref={trackRef} className={styles.track} style={{ "--walkthrough-distance": `${Math.max(130, screens.length * 52)}svh` } as CSSProperties}>
         <div className={styles.stage}>
-          <p className={styles.counter} aria-label={`${SCREENS.length} product screens`}>
-            <span ref={counterRef}>01</span><span>/</span><span>{SCREENS.length}</span>
+          <p className={styles.counter} aria-label={`${screens.length} product screens`}>
+            <span ref={counterRef}>01</span><span>/</span><span>{screens.length}</span>
           </p>
 
           <div ref={railRef} className={styles.rail}>
-            {SCREENS.map((screen, index) => (
+            {screens.map((screen, index) => (
               <figure key={screen.src} className={`${styles.slide} ${screen.height > screen.width ? styles.portrait : ""}`}>
                 <div className={styles.imageFrame}>
                   <Image
                     src={screen.src}
-                    alt={`${screen.title} screen in Synapse`}
+                    alt={`${screen.title} screen in ${project}`}
                     width={screen.width}
                     height={screen.height}
                     sizes="(max-width: 760px) 100vw, 78vw"
@@ -128,7 +144,7 @@ export function SynapseWalkthrough() {
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <div><strong>{screen.title}</strong><p>{screen.note}</p></div>
                 </figcaption>
-                {index < SCREENS.length - 1 && <span className={styles.slideArrow} aria-hidden="true">→</span>}
+                {index < screens.length - 1 && <span className={styles.slideArrow} aria-hidden="true">→</span>}
               </figure>
             ))}
           </div>

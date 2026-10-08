@@ -5,7 +5,9 @@ export type DiagramId =
   | "synapse-deployment" | "synapse-evaluation" | "synapse-results"
   | "autobg-architecture" | "autobg-matting" | "autobg-template"
   | "autobg-reflection" | "autobg-background" | "autobg-plate"
-  | "autobg-relight" | "autobg-runtime";
+  | "autobg-relight" | "autobg-runtime"
+  | "contentforge-architecture" | "contentforge-generation"
+  | "contentforge-workflow" | "contentforge-data";
 
 export type DocumentBlock =
   | { type: "paragraph"; text: string }
@@ -26,7 +28,7 @@ export type DocumentSection = {
 };
 
 export type ProjectDocument = {
-  slug: "synapse" | "autobg";
+  slug: "synapse" | "autobg" | "contentforge";
   name: string;
   title: string;
   subtitle: string;

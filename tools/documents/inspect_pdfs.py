@@ -3,13 +3,14 @@ from pathlib import Path
 import json
 import re
 import unicodedata
+import sys
 import pymupdf
 from pypdf import PdfReader
 from PIL import Image, ImageOps, ImageDraw
 
 destination = Path("tmp/pdfs/rendered")
 destination.mkdir(parents=True, exist_ok=True)
-for slug in ("synapse", "autobg"):
+for slug in (sys.argv[1:] or ("synapse", "autobg", "contentforge")):
     filename = Path("output/pdf") / f"{slug}-technical-description.pdf"
     reader = PdfReader(filename)
     texts = [page.extract_text() or "" for page in reader.pages]
@@ -21,7 +22,7 @@ for slug in ("synapse", "autobg"):
     assert len(expected_text["chapters"]) == 12
     for text in expected_text["chapters"] + expected_text["paragraphs"]:
         assert normalize(text) in normalize(joined), f"Missing or clipped text: {text[:75]}"
-    expected = ("0.839", "80%", "faithfulness") if slug == "synapse" else ("REFL_STEPS", "13", "BiRefNet")
+    expected = {"synapse": ("0.839", "80%", "faithfulness"), "autobg": ("REFL_STEPS", "13", "BiRefNet"), "contentforge": ("sourceContentId", "fifty", "Clerk")}[slug]
     for token in expected:
         assert token in joined, f"Missing content: {token}"
     doc = pymupdf.open(filename)

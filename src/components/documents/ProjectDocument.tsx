@@ -61,7 +61,7 @@ export default function ProjectDocument({ document }: { document: Document }) {
         <a className={styles.sidebarDownload} href={pdf} download={`${document.name}-technical-description.pdf`}><DownloadIcon /> Take the study offline</a>
       </aside>
       <details className={styles.mobileContents}>
-        <summary>Contents <span>12 chapters + figures</span></summary>
+        <summary>Contents <span>{document.sections.length} chapters + figures</span></summary>
         <div data-lenis-prevent><Contents document={document} /></div>
       </details>
 

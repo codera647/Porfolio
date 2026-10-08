@@ -24,9 +24,9 @@ try {
       videos: [...projects.querySelectorAll('video')].map(video => ({ loop: video.loop, muted: video.muted, controls: video.controls })),
     };
   })()`);
-  assert.deepEqual(content.titles, ["Diffwise", "Synapse", "AutoBG"]);
+  assert.deepEqual(content.titles, ["Diffwise", "ContentForge AI", "Synapse", "AutoBG"]);
   assert(content.beforeExperience && content.locked && content.indices === 0);
-  assert(content.videos.length === 2 && content.videos.every(video => video.loop && video.muted && !video.controls));
+  assert(content.videos.length === 3 && content.videos.every(video => video.loop && video.muted && !video.controls));
 
   for (const [width, height] of [[1440, 1000], [768, 900], [390, 844], [320, 740]]) {
     await browser.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 680 });

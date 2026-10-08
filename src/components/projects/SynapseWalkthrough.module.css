@@ -5,7 +5,7 @@
 
 .track {
   position: relative;
-  height: 780svh;
+  height: var(--walkthrough-distance, 780svh);
 }
 
 .stage {

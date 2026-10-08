@@ -10,7 +10,7 @@ try {
     const { data } = await browser.send("Page.captureScreenshot", { format: "png" });
     await writeFile(`tmp/pdfs/web/${name}.png`, Buffer.from(data, "base64"));
   };
-  for (const slug of ["synapse", "autobg"]) {
+  for (const slug of ["synapse", "autobg", "contentforge"]) {
     const html = await (await fetch(`${base}/projects/${slug}/description`)).text();
     assert(html.includes('data-doc-section'), "Article must be server-rendered, not depend on JavaScript for its text");
     assert(!/Source basis|Source snapshot|b79bb2dd2794|68252421347e/i.test(html), "Source-basis notes must not appear on the reading page");
@@ -23,10 +23,11 @@ try {
     assert(await browser.evaluate("scrollY <= 1"), "Document must open at top");
     assert(await browser.evaluate("document.documentElement.scrollWidth<=innerWidth+1"), "Desktop article overflows");
     await shot(`${slug}-desktop`);
-    await browser.evaluate("document.querySelector('[data-desktop-toc] a[href=\"#runtime\"], [data-desktop-toc] a[href=\"#evaluation\"]').click()");
-    await browser.waitFor("document.querySelectorAll('[data-doc-toc] a[aria-current=\"location\"]:is([href=\"#runtime\"],[href=\"#evaluation\"])').length===2");
+    const targetChapter = slug === "contentforge" ? "limits" : slug === "autobg" ? "runtime" : "evaluation";
+    await browser.evaluate(`document.querySelector('[data-desktop-toc] a[href="#${targetChapter}"]').click()`);
+    await browser.waitFor(`document.querySelectorAll('[data-doc-toc] a[aria-current="location"][href="#${targetChapter}"]').length===2`);
     await sleep(700);
-    assert(await browser.evaluate("!document.querySelector('#runtime [data-reveal-pending], #evaluation [data-reveal-pending]')"), "Jumped chapter must not be invisible");
+    assert(await browser.evaluate(`!document.querySelector('#${targetChapter} [data-reveal-pending]')`), "Jumped chapter must not be invisible");
     await shot(`${slug}-results`);
     await browser.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await browser.evaluate("window.scrollTo({top:0,behavior:'instant'})");

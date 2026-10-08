@@ -53,6 +53,38 @@ export function Projects() {
           </div>
         </article>
         <Link
+          href="/projects/contentforge"
+          className={styles.project}
+          aria-label="Open the ContentForge AI project case study"
+          data-project="contentforge"
+        >
+          <div className={styles.projectHeading}>
+            <div>
+              <p>ContentForge AI / Brand-aware content creation</p>
+              <h3>One brand voice, from the first brief to the content calendar</h3>
+            </div>
+            <span>View project ↗</span>
+          </div>
+          <div className={`${styles.media} ${styles.containedMedia}`}>
+            <ProjectPreviewVideo
+              src="/projects/contentforge/demo-1.mp4"
+              poster="/projects/contentforge/poster-1.jpg"
+              label="ContentForge AI product overview"
+            />
+          </div>
+          <div className={styles.projectMeta}>
+            <div>
+              <h4>ContentForge AI</h4>
+              <p>Brand-aware generation, repurposing &amp; content planning</p>
+            </div>
+            <ul aria-label="ContentForge AI capabilities">
+              <li>Generative AI</li>
+              <li>Brand voice</li>
+              <li>Content workflows</li>
+            </ul>
+          </div>
+        </Link>
+        <Link
           href="/projects/synapse"
           className={styles.project}
           aria-label="Open the Synapse project case study"

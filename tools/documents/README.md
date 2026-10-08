@@ -44,6 +44,12 @@ sheets are ignored under `tmp/pdfs`; final PDFs are intentionally retained.
 Install the export/QA dependencies with
 `python -m pip install -r tools/documents/requirements.txt`.
 
+To regenerate only one study without touching the other PDFs, use
+`node tools/documents/export-pdfs.mjs http://localhost:3200 contentforge`.
+Inspect just that export with `python tools/documents/inspect_pdfs.py contentforge`.
+ContentForge includes four native architecture diagrams, interface figures,
+and twelve chapters. No model-quality benchmark is invented for this project.
+
 ## Evidence rules
 
 - Synapse content basis: source snapshot `b79bb2dd2794981971996096dace1200015204c9`,
