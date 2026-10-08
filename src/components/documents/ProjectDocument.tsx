@@ -10,12 +10,10 @@ function DownloadIcon() {
 }
 
 function Contents({ document }: { document: Document }) {
-  let previousPart = "";
   return <nav aria-label={`${document.name} document contents`} data-doc-toc>
     <a href="#frontispiece" className={styles.tocLink}><span>00</span>Frontispiece</a>
-    {document.sections.map((section) => {
-      const showPart = previousPart !== section.part;
-      previousPart = section.part;
+    {document.sections.map((section, index) => {
+      const showPart = index === 0 || document.sections[index - 1].part !== section.part;
       return <div key={section.id}>
         {showPart && <p className={styles.tocPart}>{section.part}</p>}
         <a href={`#${section.id}`} className={styles.tocLink}><span>{section.number}</span>{section.title}</a>
@@ -78,6 +76,10 @@ export default function ProjectDocument({ document }: { document: Document }) {
             <p><strong>How to read this study.</strong> Start with the problem, follow the implementation through its boundaries, then examine the evidence and tradeoffs. The diagrams are system maps; the tables make configuration and responsibilities explicit.</p>
             <p>Implemented behavior, reported results, and future hardening are kept separate. Use the contents to jump to a chapter, or read from top to bottom. The PDF includes the complete text, figures, and graphs.</p>
           </aside>
+          <nav className={styles.printContents} aria-label="Printed document contents">
+            <p>In this study</p>
+            <ol>{document.sections.map((section) => <li key={section.id}><a href={`#${section.id}`}><span>{section.number}</span>{section.title}</a></li>)}</ol>
+          </nav>
         </header>
 
         {document.sections.map((section) => <section id={section.id} data-doc-section key={section.id} className={styles.chapter} aria-labelledby={`heading-${section.id}`}>

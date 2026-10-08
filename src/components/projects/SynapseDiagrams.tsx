@@ -52,7 +52,7 @@ export function Shell({
 }) {
   return (
     <figure className={styles.figure}>
-      <div data-diagram-shell className={styles.shell}>
+      <div data-diagram-shell className={styles.shell} tabIndex={0} role="region" aria-label={title}>
         <div data-diagram-title className={styles.diagramTitle}>
           <span>{title}</span>
           <span>{project} / System map</span>

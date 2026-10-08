@@ -52,6 +52,7 @@
 .tocLink[aria-current] > span { color: var(--amber); }
 .sidebarDownload { display: inline-flex; margin-top: 32px; align-items: center; gap: 9px; color: var(--doc-muted); font-size: 0.65rem; text-underline-offset: 5px; }
 .mobileContents { display: none; }
+.printContents { display: none; }
 .article { min-width: 0; padding-bottom: 70px; }
 .frontispiece { padding: clamp(44px, 7vw, 90px) 0 60px; scroll-margin-top: 90px; }
 .eyebrow, .part, .figureLabel { color: var(--amber); font-size: 0.64rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
@@ -86,7 +87,7 @@
 .code figcaption { padding: 13px 20px; border-bottom: 1px solid var(--doc-border); color: var(--amber); font-size: 0.6rem; letter-spacing: 0.06em; }
 .code pre { padding: 24px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.71rem; line-height: 1.85; background: rgb(248 248 248 / 2%); }
 .diagram { min-width: 0; margin: 36px 0; }
-.diagram :global([data-diagram-shell]) { background: var(--canvas); background-image: var(--grain-soft); background-size: 160px 160px; padding: 24px; }
+.diagram :global([data-diagram-shell]) { overflow-x: auto; background: var(--canvas); background-image: var(--grain-soft); background-size: 160px 160px; padding: 24px; }
 .diagram :global([data-diagram-node]) { min-width: 0; padding: 12px 10px; }
 .diagram :global([data-diagram-flow]) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 6px; }
 .diagram :global([data-diagram-step]) { min-width: 0; }
@@ -162,16 +163,16 @@
   .topbar, .sidebar, .mobileContents, .skipLink, .documentFooter { display: none !important; }
   .layout { display: block; width: 100%; padding: 0; }
   .article { padding: 0; }
-  .frontispiece { padding: 5mm 0 7mm; }
+  .frontispiece { padding: 5mm 0 7mm; break-after: page; }
   .frontispiece h1 { font-size: 28pt; }
   .abstract { font-size: 11pt; line-height: 1.75; }
   .eyebrow, .part { font-size: 7pt; }
   .byline { font-size: 7pt; }
   .introduction { font-size: 9pt; line-height: 1.75; }
-  .chapter { padding: 7mm 0 6mm; break-before: page; border-top: none; }
+  .chapter { padding: 7mm 0 6mm; break-before: auto; }
   .chapterHeading { break-after: avoid; margin-bottom: 5mm; gap: 4mm; }
   .chapterHeading h2 { font-size: 19pt; }
-  .part { margin-bottom: 4mm; }
+  .part { margin-bottom: 4mm; break-after: avoid; }
   .paragraph, .list { font-size: 9pt; line-height: 1.8; orphans: 3; widows: 3; }
   .subheading { font-size: 12pt; break-after: avoid; }
   .note { font-size: 8pt; line-height: 1.7; padding: 4mm; break-inside: avoid; }
@@ -195,8 +196,15 @@
   .diagram :global([data-diagram-node]) span { font-size: 6pt; }
   .diagram :global([data-diagram-flow]) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .diagram figcaption, .imageFigure figcaption, .runtimeFigure figcaption { font-size: 7pt; }
+  .diagram :global([data-benchmark-axis]) { left: 0; }
+  .diagram :global([data-benchmark-figure]) { background-image: none; }
   .image { max-height: 80mm; }
   .code pre { font-size: 7.5pt; padding: 4mm; white-space: pre-wrap; }
   .runtimeFigure { padding: 4mm; }
+  .printContents { display: block; margin-top: 7mm; padding-top: 5mm; border-top: 1px solid var(--doc-border); }
+  .printContents > p { color: var(--amber); font-size: 7pt; text-transform: uppercase; letter-spacing: 0.08em; }
+  .printContents ol { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 7mm; padding: 0; margin-top: 4mm; list-style: none; }
+  .printContents a { display: flex; gap: 3mm; color: var(--doc-muted); font-size: 7.5pt; line-height: 1.5; text-decoration: none; }
+  .printContents a > span { color: var(--amber); }
   .page[data-enhanced] [data-doc-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
 }

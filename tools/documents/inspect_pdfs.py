@@ -1,5 +1,8 @@
 """Render every PDF page; check extracted text and produce contact sheets for QA."""
 from pathlib import Path
+import json
+import re
+import unicodedata
 import pymupdf
 from pypdf import PdfReader
 from PIL import Image, ImageOps, ImageDraw
@@ -10,9 +13,14 @@ for slug in ("synapse", "autobg"):
     filename = Path("output/pdf") / f"{slug}-technical-description.pdf"
     reader = PdfReader(filename)
     texts = [page.extract_text() or "" for page in reader.pages]
-    assert len(texts) >= 12, "Expected the complete chapter set"
+    assert len(texts) >= 5, "Expected a complete long-form document"
     assert all(len(text.strip()) > 35 for text in texts), "Blank or near-blank PDF page"
     joined = " ".join(texts)
+    normalize = lambda text: re.sub(r"\s+", "", unicodedata.normalize("NFKC", text)).casefold()
+    expected_text = json.loads((Path("tmp/pdfs") / f"{slug}-expected-text.json").read_text(encoding="utf-8"))
+    assert len(expected_text["chapters"]) == 12
+    for text in expected_text["chapters"] + expected_text["paragraphs"]:
+        assert normalize(text) in normalize(joined), f"Missing or clipped text: {text[:75]}"
     expected = ("0.839", "80%", "faithfulness") if slug == "synapse" else ("REFL_STEPS", "13", "BiRefNet")
     for token in expected:
         assert token in joined, f"Missing content: {token}"

@@ -18,7 +18,7 @@ const ANSWER_RESULTS = [
 export function SynapseBenchmarkCharts() {
   return (
     <div className={styles.results}>
-      <figure className={styles.figure}>
+      <figure data-benchmark-figure className={styles.figure}>
         <header>
           <p>Retrieval quality</p>
           <h4>Document-level hit@5</h4>
@@ -44,7 +44,7 @@ export function SynapseBenchmarkCharts() {
               </div>
             ))}
           </div>
-          <span className={styles.axisTitle}>Document-level hit@5</span>
+          <span data-benchmark-axis className={styles.axisTitle}>Document-level hit@5</span>
         </div>
         <figcaption>
           Exact supplied results: 0.839 overall, perfect 1-hop and 2-hop retrieval,
@@ -52,7 +52,7 @@ export function SynapseBenchmarkCharts() {
         </figcaption>
       </figure>
 
-      <figure className={styles.figure}>
+      <figure data-benchmark-figure className={styles.figure}>
         <header>
           <p>Answer quality</p>
           <h4>Dual-judge result distribution</h4>

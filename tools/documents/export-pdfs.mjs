@@ -9,6 +9,7 @@ try {
   await browser.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
   await browser.send("Emulation.setEmulatedMedia", { media: "print", features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await mkdir("output/pdf", { recursive: true });
+  await mkdir("tmp/pdfs", { recursive: true });
   for (const slug of ["synapse", "autobg"]) {
     await browser.send("Page.navigate", { url: `${base}/projects/${slug}/description` });
     await browser.waitFor(`document.querySelector('[data-project-document="${slug}"][data-enhanced]') && document.querySelectorAll('[data-doc-section]').length === 12`);
@@ -18,6 +19,8 @@ try {
     })]).then(()=>true)`);
     const broken = await browser.evaluate("[...document.images].filter(img=>!img.naturalWidth).map(img=>img.src)");
     if (broken.length) throw new Error(`Broken PDF figures: ${broken.join(", ")}`);
+    const expected = await browser.evaluate(`({chapters:[...document.querySelectorAll('[data-doc-section] h2')].map(n=>n.textContent),paragraphs:[...document.querySelectorAll('[data-doc-section] p')].map(n=>n.textContent)})`);
+    await writeFile(`tmp/pdfs/${slug}-expected-text.json`, JSON.stringify(expected));
     // Print CSS overrides reveal opacity and screen scroll regions for every chapter.
     const { data } = await browser.send("Page.printToPDF", {
       printBackground: true, preferCSSPageSize: true, generateTaggedPDF: true,
