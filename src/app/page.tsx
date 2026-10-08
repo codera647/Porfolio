@@ -35,8 +35,8 @@ export default async function Home() {
       <IntroStage signature={signature} />
       <Philosophy />
       <Shipping />
-      <Experience />
       <Projects />
+      <Experience />
     </main>
   );
 }

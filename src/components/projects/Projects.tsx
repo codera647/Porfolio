@@ -6,13 +6,52 @@ export function Projects() {
   return (
     <section id="projects" className={styles.section} aria-labelledby="projects-title">
       <header className={styles.header}>
-        <p className={styles.eyebrow}>Selected work / 02</p>
+        <p className={styles.eyebrow}>Selected work</p>
         <h2 id="projects-title" className={styles.title}>
           What I&apos;ve Been <span>Building</span>
         </h2>
       </header>
 
       <div className={styles.projectGrid}>
+        <article className={`${styles.project} ${styles.lockedProject}`} aria-labelledby="diffwise-project-title" aria-describedby="diffwise-availability" data-project="diffwise">
+          <div className={styles.projectHeading}>
+            <div>
+              <p>Diffwise / Evidence-bound PR review</p>
+              <h3>Code reviews grounded in evidence, with humans in control</h3>
+            </div>
+            <span className={styles.productionStatus}>In production</span>
+          </div>
+          <div className={`${styles.media} ${styles.lockedMedia}`}>
+            <span className={styles.lockBadge}>
+              Locked
+              <svg width="20" height="24" viewBox="0 0 24 28" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <rect x="4" y="12" width="16" height="13" rx="2" />
+                <path d="M8 12V8a4 4 0 0 1 8 0v4" />
+              </svg>
+            </span>
+            <div className={styles.lockedWordmark} aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="13" cy="10" r="4" />
+                <circle cx="13" cy="38" r="4" />
+                <circle cx="35" cy="38" r="4" />
+                <path d="M13 14v20M35 34V22a8 8 0 0 0-8-8h-5m4-4-4 4 4 4" />
+              </svg>
+              <span>Diffwise</span>
+            </div>
+          </div>
+          <div className={styles.projectMeta}>
+            <div>
+              <h4 id="diffwise-project-title">Diffwise</h4>
+              <p>Pull-request review built on Trailforge</p>
+              <p className={styles.lockedAvailability} id="diffwise-availability">Private case study</p>
+            </div>
+            <ul aria-label="Diffwise capabilities">
+              <li>Agentic review</li>
+              <li>Human approval</li>
+              <li>Durable workflows</li>
+            </ul>
+          </div>
+        </article>
         <Link
           href="/projects/synapse"
           className={styles.project}
@@ -27,7 +66,6 @@ export function Projects() {
           </div>
           <div className={styles.media}>
             <ProjectPreviewVideo />
-            <span className={styles.projectIndex} aria-hidden="true">01</span>
           </div>
 
           <div className={styles.projectMeta}>
@@ -60,7 +98,6 @@ export function Projects() {
               poster="/projects/autobg/poster.jpg"
               label="AutoBG car background removal and studio compositing demonstration"
             />
-            <span className={styles.projectIndex} aria-hidden="true">02</span>
           </div>
           <div className={styles.projectMeta}>
             <div>
