@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Experience.module.css";
 
-const EXPERIENCE_FOLLOW_THROUGH_MS = 180;
+const EXPERIENCE_FOLLOW_THROUGH_MS = 110;
 
 const EXPERIENCES = [
   {
@@ -108,7 +108,7 @@ export function Experience() {
       const local = segment === transitionCount - 1 && journey === 1
         ? 1
         : scaled - segment;
-      const moving = smoothstep(clamp((local - 0.08) / 0.84));
+      const moving = smoothstep(clamp((local - 0.04) / 0.92));
       return segment + moving;
     };
 
@@ -151,10 +151,10 @@ export function Experience() {
 
     return animatePinnedScene(track, render, {
       checkpoints: [0, 0.25, 0.5, 0.75, 1],
-      minimumTravelMs: 3400,
+      minimumTravelMs: 2400,
       followThroughMs: EXPERIENCE_FOLLOW_THROUGH_MS,
-      lookAhead: 0.16,
-      holdMs: 120,
+      lookAhead: 0.20,
+      holdMs: 60,
       measure,
     });
   }, []);

@@ -5,7 +5,7 @@ import { TECH_ICONS } from "@/vendor/simple-icons/techIcons";
 import { animatePinnedScene } from "@/lib/pinnedScroll";
 import styles from "./Shipping.module.css";
 
-const SHIPPING_FOLLOW_THROUGH_MS = 190;
+const SHIPPING_FOLLOW_THROUGH_MS = 120;
 
 const TOOL_SLUGS = [
   "python",
@@ -149,12 +149,12 @@ export function Shipping() {
 
         const segmentStart = (index - 1) / transitionCount;
         const segmentSize = 1 / transitionCount;
-        // Hold briefly before and after each entrance. Smoothstep has zero
-        // velocity at both ends, so a delayed card never snaps into motion.
+        // A short lead-in/out keeps the entrance soft without dead scrolling.
+        // Smoothstep has zero velocity at both ends, so cards never snap.
         const segmentProgress = (progress - segmentStart) / segmentSize;
         const local = Math.min(
           1,
-          Math.max(0, (segmentProgress - 0.1) / 0.8),
+          Math.max(0, (segmentProgress - 0.05) / 0.9),
         );
         setCardProgress(card, index, local);
       });
@@ -162,10 +162,10 @@ export function Shipping() {
 
     return animatePinnedScene(track, render, {
       checkpoints: [0, 1 / 3, 2 / 3, 1],
-      minimumTravelMs: 2800,
+      minimumTravelMs: 2100,
       followThroughMs: SHIPPING_FOLLOW_THROUGH_MS,
-      lookAhead: 0.18,
-      holdMs: 120,
+      lookAhead: 0.22,
+      holdMs: 60,
       measure: measureCardTravel,
     });
   }, []);

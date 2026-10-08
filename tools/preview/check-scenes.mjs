@@ -67,13 +67,15 @@ try {
     window.__sceneDone = false;
     const tracks = [...document.querySelectorAll('[data-scroll-scene]')];
     const completed = new Set();
+    const arrivals = new Map();
     function inspect() {
       for (const track of tracks) {
         const rect = track.getBoundingClientRect();
+        if (rect.top <= 1 && !arrivals.has(track)) arrivals.set(track, performance.now());
         const released = rect.top < -(rect.height - track.firstElementChild.clientHeight) - 4;
         if (released && !completed.has(track)) {
           const progress = Number(track.dataset.sceneProgress);
-          window.__sceneChecks.push({section:track.closest('section').id, progress});
+          window.__sceneChecks.push({section:track.closest('section').id, progress, durationMs:Math.round(performance.now()-arrivals.get(track))});
           completed.add(track);
         }
       }

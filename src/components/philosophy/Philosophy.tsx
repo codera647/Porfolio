@@ -8,7 +8,7 @@ import styles from "./Philosophy.module.css";
 // A short, time-based follow-through keeps the image from reacting instantly
 // to large wheel/trackpad deltas. Because it is measured in milliseconds, the
 // feel remains consistent across 60 Hz and high-refresh displays.
-const PHILOSOPHY_FOLLOW_THROUGH_MS = 180;
+const PHILOSOPHY_FOLLOW_THROUGH_MS = 110;
 
 /**
  * Philosophy Section with ScrollExpand cinematic animation.
@@ -128,10 +128,10 @@ export function Philosophy() {
 
     return animatePinnedScene(track, render, {
       checkpoints: [0, 1],
-      minimumTravelMs: 1400,
+      minimumTravelMs: 1000,
       followThroughMs: PHILOSOPHY_FOLLOW_THROUGH_MS,
-      lookAhead: 0.28,
-      holdMs: 120,
+      lookAhead: 0.34,
+      holdMs: 60,
       measure: handleResize,
     });
   }, []);
