@@ -72,7 +72,14 @@ try {
       for (const track of tracks) {
         const rect = track.getBoundingClientRect();
         if (rect.top <= 1 && !arrivals.has(track)) arrivals.set(track, performance.now());
-        const released = rect.top < -(rect.height - track.firstElementChild.clientHeight) - 4;
+        const passed = rect.top < -(rect.height - track.firstElementChild.clientHeight) - 4;
+        // The final section can finish at the document bottom without scrolling
+        // four pixels beyond its track. Still require its completed animation.
+        const finishedAtPageEnd = track === tracks.at(-1)
+          && track.dataset.scenePhase === 'complete'
+          && Number(track.dataset.sceneProgress) >= 0.999
+          && scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+        const released = passed || finishedAtPageEnd;
         if (released && !completed.has(track)) {
           const progress = Number(track.dataset.sceneProgress);
           window.__sceneChecks.push({section:track.closest('section').id, progress, durationMs:Math.round(performance.now()-arrivals.get(track))});
